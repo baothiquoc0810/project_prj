@@ -29,8 +29,16 @@
                         </div>
                         <div class="box-account box-info">
                             <div class="box-head" style="font-weight: bold">Thông tin tài khoản</div>
-                            <div class="box">
-                                
+                            <div class="box" style="display: inline-block">
+                                <div class="box-title">
+                                    <h3 class="title-my-account">LIÊN HỆ</h3>
+                                    <a href="update">Thay đổi</a>
+                                </div>
+                                <div class="box-content">
+                                    <span>Tên: ${sessionScope.account.displayName}</span>
+                                    <span>Tài Khoản: ${sessionScope.account.username}</span>
+                                    <span>Chức danh: ${sessionScope.account.role.name}</span>
+                                </div>
                             </div>
                         </div>
                     </div>

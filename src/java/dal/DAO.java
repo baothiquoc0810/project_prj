@@ -45,6 +45,22 @@ public class DAO extends DBContext {
         }
         return false;
     }
+    //void check user by UserID
+    public boolean checkUserByID(int userID) {
+        String sql = "SELECT * FROM Users WHERE userID = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
 
     //get all users
     public List<Users> getUsers() {
@@ -67,26 +83,94 @@ public class DAO extends DBContext {
         }
         return null;
     }
+    //get user by username
+    public Users getUserByUsername(String username){
+        String sql = "SELECT * FROM Users join Roles on Users.roleID = Roles.roleID where username = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                Roles r = new Roles(rs.getInt("roleID"), rs.getString("name"));
+                Users u = new Users(rs.getInt("userID"), rs.getString("displayName"), rs.getString("username"), rs.getString("password"), r);
+                return u;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return null;
+    }
 
     //check login
     public Users checkLogin(String username, String password) {
-        String sql = "select * from Users where username = ? and password = ?";
+        String sql = "select * from Users join [Roles] on Users.roleID = Roles.roleID where username = ? and password = ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, username);
-            st.setString(2,password);
+            st.setString(2, password);
             ResultSet rs = st.executeQuery();
-            if(rs.next()){
-                 return new Users(rs.getString("displayName"),username, password);
+            Roles r;
+            if (rs.next()) {
+                String role = "";
+                if(rs.getString("name").equals("admin")){
+                    role = "admin";
+                }else{
+                    role = "user";
+                }
+                r = new Roles(rs.getInt("roleID"), role);
+                return new Users(rs.getInt("userID"),rs.getString("displayName"), username, password,r );
             }
         } catch (SQLException e) {
         }
         return null;
     }
 
+    //void update display name
+    public void updateDisplayName(String username, String displayName){
+        String sql = "update Users set displayName = ? where username = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, displayName);
+            ps.setString(2, username);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+    //void check pass
+    public boolean checkPass(String password, String username){
+        String sql = "select [password] from Users where username = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, username);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                String acctualPass = rs.getString("Password");
+                return acctualPass.equals(password);
+            }
+        } catch (SQLException e) {
+        }
+        return false;
+    }
+
+
+    //void update password
+    public void updatePassword(String password, String username){
+        String sql = "update Users set [password] = ? where username = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, password);
+            ps.setString(2, username);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
     public static void main(String[] args) {
         DAO dao = new DAO();
-        Users list = dao.checkLogin("bao", "123");
-            System.out.println(list.getDisplayName());
+        boolean b = dao.checkPass("123", "nguyen huu quoc bao dep trai");
+        System.out.println(b);
     }
 }
