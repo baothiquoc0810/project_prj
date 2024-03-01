@@ -1,0 +1,444 @@
+/* HEADER OPTIONS */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: #222;
+  font-size: 14px;
+  line-height: 18px;
+  background-color: #fdfcf0 !important;
+}
+
+a:hover{
+    text-decoration: none!important; 
+}
+p {
+  margin: 0;
+  padding: 0;
+}
+
+.header-container {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  max-width: 100%;
+  width: 980px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.header-option {
+  display: flex;
+  justify-content: end;
+}
+.header-option > div {
+  position: relative;
+  width: 200px;
+  display: flex;
+  justify-content: center;
+  border-radius: 5px;
+  /* margin: 10px 0px -5px; */
+}
+.header-option > div:last-child {
+  margin-right: 0px;
+}
+.header-option a {
+  color: #666666;
+}
+.header-language-background a {
+  text-decoration: none;
+}
+
+
+.header-information p,
+.header-my-ticket p,
+.header-account p {
+  margin: 10px 0; /* Thiết lập margin theo ý muốn của bạn */
+}
+
+.header-information,
+.header-my-ticket,
+.header-account {
+  transition: background-color 0.3s ease; /* Thêm transition để tạo hiệu ứng mượt khi hover */
+}
+
+.header-information:hover,
+.header-my-ticket:hover,
+.header-account:hover {
+  background-color: #e1e4e8; /* Thay đổi màu nền khi hover */
+}
+
+
+.fa-solid.fa-user,
+.fa-solid.fa-ticket,
+.fa-solid.fa-circle-info {
+  position: relative;
+  top: -4px;
+  margin-right: 3px;
+}
+
+/* HEADER CONTAINER */
+
+.page-header {
+  width: 100%;
+  height: 135px;
+  margin: 0 auto;
+  background: url(https://www.cgv.vn/skin/frontend/cgv/default/images/bg-cgv/bg-top.png)
+    repeat-x scroll left bottom transparent;
+  background-size: 10px 135px;
+}
+.page-header-container {
+  position: relative;
+  z-index: 2000;
+  width: 980px;
+  margin: 0 auto;
+}
+
+.logo {
+  display: block;
+  width: 100px;
+  height: 135px;
+  min-width: 100px;
+  text-align: center;
+}
+.logo :hover {
+  opacity: 0.8;
+}
+.logo img {
+  width: 200px;
+  height: 80px;
+  margin-top: 28px;
+}
+.header-nav-bar {
+  display: block;
+  position: absolute;
+  left: 210px;
+  top: 75px;
+}
+ol,
+li {
+  list-style: none;
+  float: left;
+}
+
+.level0-nav-1-parent {
+  display: inline-block;
+}
+.header-nav-bar .nav-primary li a.level0-has-children {
+  padding: 0 18px;
+}
+.header-nav-bar .nav-primary li a {
+  color: rgb(34, 34, 34);
+  font-weight: bold;
+  position: relative;
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 30px;
+}
+.nav-primary ul li {
+  width: 98%;
+}
+
+.nav-primary li.level0-nav-1-parent {
+  position: relative;
+}
+
+.nav-primary li.level0-nav-1-parent ul {
+  background: url(https://www.cgv.vn/skin/frontend/cgv/default/images/bg-cgv/bg_menu_hover.png)
+    repeat scroll center center rgba(0, 0, 0, 0);
+  left: 0; /* Đặt left về 0 */
+  padding: 3px;
+  position: absolute;
+  min-width: 190px;
+  max-width: min-content;
+  z-index: 10;
+  display: none;
+}
+
+/* Hiển thị dropdown khi hover và thiết lập left tương ứng với mục cha */
+.nav-primary li.level0-nav-1-parent:hover ul {
+  display: block;
+  left: 0; /* Đặt left về 0 để dropdown nằm sát mục cha */
+}
+
+.nav-primary ul.level0 li:first-child {
+  border-top: 2px solid #828282;
+  padding-top: 10px;
+}
+.nav-primary ul.level0 li:last-child {
+  border-bottom: 2px solid #828282;
+  padding-bottom: 10px;
+}
+.nav-primary ul.level0 li {
+  border-left: 2px solid #828282;
+  border-right: 2px solid #828282;
+}
+.nav-primary ul.level0 a {
+  border-bottom: none;
+  padding: 0 35px 0 10px;
+  color: #fff;
+}
+.nav-primary ul.level0 a:hover {
+  color: #e71a0f;
+}
+
+/* Header right */
+
+.header-buy-ticket {
+  display: block;
+  position: absolute;
+  top: 20px;
+  right: 160px;
+  text-align: right;
+}
+.header-buy-ticket a.ticket img {
+  transition: opacity 0.3s ease-in-out; /* Thêm hiệu ứng chuyển động */
+}
+
+.header-buy-ticket a.ticket:hover img {
+  opacity: 0.85; /* Đặt độ mờ khi hover vào */
+}
+.header-buy-ticket img {
+  width: 90px;
+  height: 90px;
+}
+
+.main-container {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 !important;
+  background: url(https://www.cgv.vn/skin/frontend/cgv/default/images/bg_c_bricks.png)
+    repeat-x scroll 0 124px rgba(0, 0, 0, 0);
+}
+
+.main {
+  width: 980px;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+
+/* BANNER */
+.carousel-item {
+  margin-bottom: 15px;
+}
+.carousel-item img {
+  /* height: 645px;
+  width: 1000px; */
+  object-fit: contain;
+  border-radius: 10px; /* Thêm border radius là 10px cho ảnh trong carousel */
+}
+
+.home-movie-selection {
+  margin: 20px 0;
+  width: 100%;
+}
+
+.home-title {
+  background: url(https://www.cgv.vn/skin/frontend/cgv/default/images/bg-cgv/bg_h3_line.jpg)
+    repeat-x scroll left center rgba(0, 0, 0, 0);
+  height: 60px;
+  text-align: center;
+  width: 100%;
+}
+
+.home-movie-selection .home-title h2 {
+  background: url(https://www.cgv.vn/skin/frontend/cgv/default/images/bg-cgv/h3_movie_selection.gif)
+    no-repeat scroll center center / 406px 41px #fdfcf0;
+  display: inline-block;
+  width: 425px;
+}
+
+.home-title h2 {
+  height: 60px;
+  text-indent: -999999px;
+  margin: 0;
+}
+
+/* Main content */
+.tab-content {
+  padding-bottom: 10px;
+}
+
+.curr-list {
+  margin-left: -20px;
+  min-height: 441px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.curr-list .num {
+  position: absolute;
+  left: 0;
+  bottom: 4px;
+  z-index: 11;
+  display: block;
+  width: 100%;
+  height: 49px;
+  background: url(https://www.lottecinemavn.com/LCHS/Image/Bg/bg_w_mk.png)
+    repeat-y left bottom;
+  font-size: 28px;
+  color: #fff;
+  font-family: "linlivertine";
+  font-weight: bold;
+  padding: 5px 0 0 20px;
+  font-style: italic;
+  line-height: 45px;
+  -webkit-box-sizing: border-box;
+  text-align: left;
+}
+
+.curr-list a {
+  display: block;
+}
+a {
+  text-decoration: none;
+  color: #555;
+}
+.curr-list .curr-box {
+  position: relative;
+  height: 334px;
+}
+
+.curr-list > li {
+  position: relative;
+  width: 230px;
+  height: 411px;
+  margin: 0 0 40px 20px;
+}
+.curr-list .img img {
+  width: 228px;
+  height: 334px;
+}
+
+.curr-list .list-text {
+  margin: 0;
+  border-top: 1px solid #e5e5e5;
+  box-sizing: border-box;
+  background-color: #fdf7dc;
+}
+
+.curr-list .list-text dt {
+  padding: 12px 15px 11px 15px;
+  border-bottom: 1px solid #dedede;
+}
+
+.curr-list .list-text dt a {
+  font-size: 14px;
+  line-height: 20px;
+  overflow: hidden;
+  width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #231f20;
+  font-weight: bold;
+}
+
+.curr-list .list-text dd {
+  display: flex;
+  padding: 0 46px;
+  font-size: 13px;
+  color: #777;
+  line-height: 30px;
+  margin: 0;
+}
+
+.curr-list .list-text dd .rate {
+  display: inline-block;
+  /*text-wrap: nowrap;*/
+}
+
+.curr-list .list-text dd .grade {
+  position: relative;
+  display: inline-block;
+  margin-left: 6px;
+  padding-left: 8px;
+}
+
+.curr-list .list-text dd .grade::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 1px;
+  height: 11px;
+  background: #dfdfdf;
+}
+
+/* footer */
+
+.footer-container {
+  position: relative;
+  width: 100%;
+  border-top: 1px solid #ededed;
+}
+.footer-inner {
+  width: 980px;
+  margin: 0 auto;
+  padding: 30px 0 20px;
+}
+.footer-logo {
+  float: left;
+}
+
+img {
+  border: 0;
+  vertical-align: middle;
+}
+
+.footer-tit::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.company-info {
+  margin: 3px 0;
+  overflow: hidden;
+  color: #666;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.company-info p {
+  margin: 0;
+}
+
+
+/*account*/
+
+.container{
+    margin-top:30px;
+}
+.my-account{
+    font-size: 20px;
+}
+
+.dashboard .page-title h1{
+    color: #fff;
+}
+
+.page-title{
+    width: 100%;
+    text-align: center;
+    margin-top: 0px;
+    background: #222;
+    height: 46px;
+    margin-bottom: 10px;
+}
+.welcome-msg{
+    color:#7f7f7f;
+}
+.welcome-msg .hello{
+    color:#000;
+    font-size: 30px;
+    margin-bottom: 0px
+}
+
+.box-head{
+    margin-top: 30px;
+    border-bottom: 1px solid #cccccc;
+    padding-bottom: 7px;
+}
+
