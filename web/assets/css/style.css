@@ -425,7 +425,7 @@ img {
     margin-top: 0px;
     background: #222;
     height: 46px;
-    margin-bottom: 10px;
+    margin-bottom: 25px;
 }
 .welcome-msg{
     color:#7f7f7f;
@@ -439,6 +439,44 @@ img {
 .box-head{
     margin-top: 30px;
     border-bottom: 1px solid #cccccc;
-    padding-bottom: 7px;
+    padding-bottom: 10px;
+}
+
+.box-account .box-title{
+    margin-top: 15px;
+}
+
+.title-my-account{
+    display: inline-block;
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 15px;
+    padding-right: 1%;
+}
+
+.box a{
+    background: #9d9b9b;
+    color: #fff;
+    display: inline-block;
+    min-width: 85px;
+    padding: 3px 8px;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.box-content{
+    font-size: 20px;
+    float:left;
+    width: 100%;
+    margin-bottom: 10px;
+    color:#7f7f7f;
+}
+
+.box-content span{
+    float:left;
+    width: 100%;
+    display: inline;
+    margin-bottom: 7px;
 }
 
