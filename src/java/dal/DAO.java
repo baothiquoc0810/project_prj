@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import modal.Movies;
 
 public class DAO extends DBContext {
 
@@ -168,9 +169,30 @@ public class DAO extends DBContext {
         }
     }
 
+    //void get all movies
+    public List<Movies> getMovies(){
+        List<Movies> list = new ArrayList<>();
+        String sql = "select * from Movies";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Movies m = new Movies(rs.getInt("movieID"), rs.getString("title"), rs.getString("description"),rs.getDate("releaseDate"),rs.getString("posterImage"), rs.getInt("duration"));
+                list.add(m);
+            }
+            return list;
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
     public static void main(String[] args) {
         DAO dao = new DAO();
-        boolean b = dao.checkPass("123", "nguyen huu quoc bao dep trai");
-        System.out.println(b);
+        //print all movies title
+        List<Movies> list = dao.getMovies();
+        for (Movies movies : list) {
+            System.out.println(movies.getTitle());
+        }
     }
 }

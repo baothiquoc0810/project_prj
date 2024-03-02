@@ -62,7 +62,7 @@
                             </div>
                         </div>
                     </div>
-                    <!--  -->
+
                     <div class="home-movie-selection">
                         <div class="home-title">
                             <h2>MOVIE SELECTION</h2>
@@ -70,7 +70,33 @@
                     </div>
                     <div class="tab-content">
                         <ul class="curr-list">
-                            <li>
+                            <% int movieNumber = 1; %>
+                            <c:forEach items="${listPoster}" var="poster">
+                                <li>
+                                    <div class="curr-box">
+                                        <span class="num"><%= movieNumber++ %></span>
+                                        <span class="img">
+                                            <a href="#">
+                                                <img src="./assets/images/posterImages/${poster.posterImage}" />
+                                            </a>
+                                        </span>
+                                    </div>
+                                    <dl class="list-text">
+                                        <dt>
+                                            <a href="#">
+                                                <span>${poster.title.toUpperCase()}</span>
+                                            </a>
+                                        </dt>
+                                        <dd>
+                                            <span class="rate">${poster.duration} phút</span>
+                                            <span class="grade">
+                                                <em>${poster.releaseDate}</em>
+                                            </span>
+                                        </dd>
+                                    </dl>
+                                </li>
+                            </c:forEach>
+<!--                            <li>
                                 <div class="curr-box">
                                     <span class="num">1</span>
                                     <span class="img">
@@ -244,32 +270,7 @@
                                         </span>
                                     </dd>
                                 </dl>
-                            </li>
-                            <li>
-                                <div class="curr-box">
-                                    <span class="num">1</span>
-                                    <span class="img">
-                                        <a href="#">
-                                            <img
-                                                src="https://media.lottecinemavn.com/Media/MovieFile/MovieImg/202312/11310_103_100002.jpg"
-                                                />
-                                        </a>
-                                    </span>
-                                </div>
-                                <dl class="list-text">
-                                    <dt>
-                                        <a href="#">
-                                            <span>TRÊN BÀN NHẬU DƯỚI BÀN MƯU</span>
-                                        </a>
-                                    </dt>
-                                    <dd>
-                                        <span class="rate">116 Phút</span>
-                                        <span class="grade">
-                                            <em>29/12/2013</em>
-                                        </span>
-                                    </dd>
-                                </dl>
-                            </li>
+                            </li>-->
                         </ul>
                     </div>
                 </div>

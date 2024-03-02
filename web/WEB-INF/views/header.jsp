@@ -55,7 +55,7 @@
         <header class="page-header">
             <div class="page-header-container">
                 <!-- LOGO chuyen toi trang chu -->
-                <a class="logo" href="./mainPage.jsp">
+                <a class="logo" href="home">
                     <img src="./assets/images/LogoFPT.png" alt="logo"/>
                 </a>
                 <div class="header-nav-bar">
