@@ -413,8 +413,34 @@ img {
 }
 .my-account{
     font-size: 20px;
+    display: flex;
+    flex-direction: row;
 }
-
+.left-content{
+    width:25%;
+    padding-right: 10px;
+}
+.block-cotent li{
+    align-items: center;
+    background-color: #bfd2d9;
+    color: #fff;
+    height: 40px;
+    padding-left: 18px;
+    float: left;
+    width: 100%;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+.block-cotent li a{
+    color: #666 ;
+    margin-left: 5px !important;
+    line-height: 34px !important;
+    font-weight: bold;
+}
+.dashboard{
+    flex: 1;
+    padding-left: 20px;
+}
 .dashboard .page-title h1{
     color: #fff;
 }
@@ -455,7 +481,7 @@ img {
 }
 
 .box a{
-    background: #9d9b9b;
+    background: #07b5f5;
     color: #fff;
     display: inline-block;
     min-width: 85px;

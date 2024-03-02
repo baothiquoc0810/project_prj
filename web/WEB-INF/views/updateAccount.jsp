@@ -27,6 +27,30 @@
         <form action="update" method="post">
             <div class="container">
                 <div class="my-account">
+                    <div class="left-content">
+                    <h1 class="block-title" style="color:red">TÀI KHOẢN</h1>
+                    <div class="block-cotent">
+                        <ul style="padding:0">
+                            <li style="background-color:${backgroundColorSecond}">
+                                <a href="account" style="color: ${colorSecond}"
+                                   >
+                                    THÔNG TIN CHUNG
+                                </a>
+                            </li>
+                            <li style="background-color:${backgroundColorMain}">
+                                <a style="color: ${colorMain}" href="update">
+                                CHI TIẾT TÀI KHOẢN
+                                </a>
+                            </li>
+                            <li style="background-color:${backgroundColorSecond}">
+                                <a style="color: ${colorSecond}"  href="#">
+                                LỊCH SỬ GIAO DỊCH
+                                </a>
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
                     <div class="dashboard">
                         <div class="page-title">
                             <h1>THAY ĐỔI THÔNG TIN</h1>

@@ -60,7 +60,18 @@ public class UpdateAccountServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        Users user = (Users) request.getSession().getAttribute("account");
+        if (user == null || user.getRole() == null || user.getRole().getName() == null) {
+            response.sendRedirect("signin");
+        } else {
+            request.setAttribute("colorMain", "white");
+            request.setAttribute("backgroundColorMain", "red");
+
+            request.setAttribute("colorSecond", "#666");
+            request.setAttribute("backgroundColorSecond", "#bfd2d9");
+
         request.getRequestDispatcher("/WEB-INF/views/updateAccount.jsp").forward(request, response);
+        }
     }
 
     /**
@@ -101,10 +112,9 @@ public class UpdateAccountServlet extends HttpServlet {
                 } else {
                     d.updatePassword(newPassword, username);
                     d.updateDisplayName(username, displayName);
-                    Users u = d.getUserByUsername(username);
                     HttpSession session = request.getSession();
-                    session.setAttribute("account", u);
-                    response.sendRedirect("home");
+                    session.removeAttribute("account");
+                    response.sendRedirect("signin");
                 }
             }
         }
