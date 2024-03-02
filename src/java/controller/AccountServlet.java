@@ -6,11 +6,14 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import modal.Users;
 
 /**
  *
@@ -57,7 +60,18 @@ public class AccountServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/views/account.jsp").forward(request, response);
+        Users user = (Users) request.getSession().getAttribute("account");
+        if (user == null || user.getRole() == null || user.getRole().getName() == null) {
+            response.sendRedirect("signin");
+        } else {
+            request.setAttribute("colorMain", "white");
+            request.setAttribute("backgroundColorMain", "red");
+
+            request.setAttribute("colorSecond", "#666");
+            request.setAttribute("backgroundColorSecond", "#bfd2d9");
+
+            request.getRequestDispatcher("/WEB-INF/views/account.jsp").forward(request, response);
+        }
     }
 
     /**
