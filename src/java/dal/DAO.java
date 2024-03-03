@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import modal.Genres;
+import modal.MovieGenres;
 import modal.Movies;
 
 public class DAO extends DBContext {
@@ -187,12 +189,75 @@ public class DAO extends DBContext {
         return null;
     }
 
+    //void get movie by movieID
+    public Movies getMovieByID(int movieID){
+        String sql = "select * from Movies where movieID = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, movieID);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                Movies m = new Movies(rs.getInt("movieID"), rs.getString("title"), rs.getString("description"),rs.getDate("releaseDate"),rs.getString("posterImage"), rs.getInt("duration"));
+                return m;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
+    //void get Genres by genresID
+    public Genres getGenresByID(int genresID){
+        String sql = "select * from Genres where genreID = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, genresID);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                Genres g = new Genres(rs.getInt("genreID"), rs.getString("name"));
+                return g;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
+    //void get list<movieGenres> by movieID
+    public List<MovieGenres> getMovieGenres(int movieID){
+        List<MovieGenres> list = new ArrayList<>();
+        String sql = "select * from MovieGenres mg " +
+                     "join Movies m on mg.movieID = m.movieID " +
+                     "join Genres g on mg.genreID = g.genreID " +
+                     "where m.movieID = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, movieID);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Genres g = new Genres(rs.getInt("genreID"), rs.getString("name"));
+                Movies m = new Movies(rs.getInt("movieID"), rs.getString("title"), rs.getString("description"),rs.getDate("releaseDate"),rs.getString("posterImage"), rs.getInt("duration"));
+                MovieGenres mg = new MovieGenres(rs.getInt("movieGenresID"), g, m);
+                list.add(mg);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
     public static void main(String[] args) {
         DAO dao = new DAO();
-        //print all movies title
-        List<Movies> list = dao.getMovies();
-        for (Movies movies : list) {
-            System.out.println(movies.getTitle());
-        }
+//        print list<movieGenres> by movieID = 1
+         List<MovieGenres> list = dao.getMovieGenres(1);
+         for (MovieGenres movieGenres : list) {
+             System.out.println(movieGenres.getGenreID().getName());
+         }
+        //print genres by genresID = 1
+//        Genres g = dao.getGenresByID(1);
+//        System.out.println(g.getName());
+//        //print movie by movieID = 1
+//        Movies m = dao.getMovieByID(1);
+//        System.out.println(m.getTitle());
+
     }
 }

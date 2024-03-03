@@ -64,7 +64,7 @@
                             <a class="level0-has-children" href="#">PHIM</a>
                             <ul class="level0">
                                 <li class="level1-nav1-1">
-                                    <a href="#" class="level1">Phim Đang Chiếu</a>
+                                    <a href="home" class="level1">Phim Đang Chiếu</a>
                                 </li>
                                 <li class="level1-nav1-2">
                                     <a href="#" class="level1">Phim Sắp Chiếu</a>
