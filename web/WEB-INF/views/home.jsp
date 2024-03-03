@@ -76,14 +76,15 @@
                                     <div class="curr-box">
                                         <span class="num"><%= movieNumber++ %></span>
                                         <span class="img">
-                                            <a href="#">
+                                            <a href="detail-movie?movieID=${poster.movieID}">
                                                 <img src="./assets/images/posterImages/${poster.posterImage}" />
                                             </a>
                                         </span>
                                     </div>
                                     <dl class="list-text">
                                         <dt>
-                                            <a href="#">
+                                            <a href="detail-movie?movieID=">
+
                                                 <span>${poster.title.toUpperCase()}</span>
                                             </a>
                                         </dt>
