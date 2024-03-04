@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import modal.Users;
 
 /**
  *
@@ -57,7 +58,14 @@ public class BookingTicketServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/views/bookingTicket.jsp").forward(request, response);
+        Users user = (Users) request.getSession().getAttribute("account");
+        if (user == null || user.getRole() == null || user.getRole().getName() == null) {
+            response.sendRedirect("signin");
+        } else {
+         String movieID = request.getParameter("movieid");
+         request.setAttribute("movieID", movieID);
+         request.getRequestDispatcher("/WEB-INF/views/bookingTicket.jsp").forward(request, response);
+        }
     }
 
     /**

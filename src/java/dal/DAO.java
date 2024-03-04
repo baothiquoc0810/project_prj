@@ -11,9 +11,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import modal.Cinemas;
 import modal.Genres;
+import modal.Location;
 import modal.MovieGenres;
 import modal.Movies;
+import modal.ScreeningTimes;
+import modal.Theaters;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class DAO extends DBContext {
 
@@ -245,19 +252,46 @@ public class DAO extends DBContext {
         }
         return list;
     }
+
+    //get list location
+    public List<ScreeningTimes> getAllFlimList(int movieID, int cinemaID, Date movieDate){
+        List<ScreeningTimes> list = new ArrayList<>();
+        String sql = "select* from [Location] l join Cinemas c on l.locationID = c.locationID join Theaters t on c.cinemaID = t.cinemaID join ScreeningTimes st on t.theaterID = st.theaterID join Movies m on st.movieID = m.movieID where m.movieID = ? and c.cinemaID = ? and c.movieDate = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, movieID);
+            ps.setInt(2, cinemaID);
+            ps.setDate(3, movieDate);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Location l = new Location(rs.getInt("locationID"), rs.getString("name"));
+                Cinemas c = new Cinemas(rs.getInt("cinemaID"), rs.getString("name"), rs.getDate("movieDate"), l);
+                Theaters t = new Theaters(rs.getInt("theaterID"),c, rs.getInt("theaterNumber") );
+                Movies m = new Movies(rs.getInt("movieID"), rs.getString("title"), rs.getString("description"),rs.getDate("releaseDate"),rs.getString("posterImage"), rs.getInt("duration"));
+                ScreeningTimes st = new ScreeningTimes(rs.getInt("screeningID"), t, m, rs.getTime("startTime"), rs.getTime("endTime"));
+                list.add(st);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }   
+        return list;
+    }
     public static void main(String[] args) {
         DAO dao = new DAO();
-//        print list<movieGenres> by movieID = 1
-         List<MovieGenres> list = dao.getMovieGenres(1);
-         for (MovieGenres movieGenres : list) {
-             System.out.println(movieGenres.getGenreID().getName());
-         }
-        //print genres by genresID = 1
-//        Genres g = dao.getGenresByID(1);
-//        System.out.println(g.getName());
-//        //print movie by movieID = 1
-//        Movies m = dao.getMovieByID(1);
-//        System.out.println(m.getTitle());
+    // Chuyển ngày từ String sang java.sql.Date
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    java.sql.Date date = null;
+    try {
+        java.util.Date utilDate = sdf.parse("2024-03-04");
+        date = new java.sql.Date(utilDate.getTime());
+    } catch (ParseException e) {
+        e.printStackTrace();
+    }
 
+    // In danh sách thời gian chiếu
+    List<ScreeningTimes> list = dao.getAllFlimList(5, 2, date);
+    for (ScreeningTimes screeningTimes : list) {
+        System.out.println(screeningTimes.getStartTime() + " - " + screeningTimes.getEndTime());
+    }
     }
 }
