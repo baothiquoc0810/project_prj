@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -31,9 +32,9 @@
             }
             .active {
                 font-weight: bold;
-                /*background-color: #ffc107;  Màu nổi bật khi được chọn */
-                color: #fff; /* Màu chữ */
+                background-color: #cdd2d4 !important;
             }
+
             .selected {
                 background-color: red !important;
             }
@@ -41,7 +42,7 @@
 
         </style>
     </head>
-    
+
     <body>
 
         <%
@@ -87,28 +88,67 @@
         %>
         <%@include file="header.jsp" %>
         <div class="container">
+
             <div class="date-movie" style="width:100%">
                 <h2 id="calendarTitle">Lịch chiếu phim của các ngày tiếp theo</h2>
                 <div class="calendar" id="calendar">
                     <% for (int i = 0; i < 5; i++) { %>
                     <a href="booking?movieid=${movieID}&date=<%= daysOfMonth.get(i) %>" class="day-link">
-                        <div class="day <%= (daysOfMonth.get(i) == today ? "today" : "") %>">
+                        <div class="day <%= (Integer.parseInt(String.valueOf(request.getAttribute("date"))) == daysOfMonth.get(i) ? "active" : "") %>">
                             <div class="date"><%= daysOfMonth.get(i) %></div>
                             <div class="day-of-week"><%= dayOfWeeks.get(i) %></div>
                         </div>
                     </a>
+
+
                     <% } %>
                 </div>
             </div>
             <div class="address">
-                <ul>
-                    <li>
-                        <span><a href="booking?movieid=${movieID}&date=<%= request.getParameter("date") %>&direction=2">Hồ Chí Minh</a></span>
-                    </li>
-                    <li><span><a href="booking?movieid=${movieID}&date=<%= request.getParameter("date") %>&direction=1">Hà Nội</a></span></li>
-                    <li><span><a href="booking?movieid=${movieID}&date=<%= request.getParameter("date") %>&direction=3">Đà Nẵng</a></span></li>
+                <ul style="display:flex; padding:0 ">
+                    <div>
+                        <% String direction1 = "2"; %>
+                        <li class="direction <%= (direction1.equals(request.getParameter("direction")) ? "active" : "") %>">
+                            <span><a href="booking?movieid=${movieID}&date=<%= request.getParameter("date") %>&direction=2">Hồ Chí Minh</a></span>
+                        </li>
+                    </div>
+                    <div>
+                        <% String direction2 = "1"; %>
+                        <li class="direction <%= (direction2.equals(request.getParameter("direction")) ? "active" : "") %>">
+                            <span><a href="booking?movieid=${movieID}&date=<%= request.getParameter("date") %>&direction=1">Hà Nội</a></span>
+                        </li>
+                    </div>
+                    <div>
+                        <% String direction3 = "3"; %>
+                        <li class="direction <%= (direction3.equals(request.getParameter("direction")) ? "active" : "") %>">
+                            <span><a href="booking?movieid=${movieID}&date=<%= request.getParameter("date") %>&direction=3">Đà Nẵng</a></span>
+                        </li>
+                    </div>
+
                 </ul>
             </div>
+            <div class="tabcontent showtimes">
+                <% if ((Boolean) request.getAttribute("isEmpty")) { %>
+                <h1 style="color:red">Rất tiếc không có suất chiếu nào!</h1>
+                <% } else { %>
+                <c:forEach items="${listCinemas}" var="nameLocation">
+                    <div class="site">
+                        <div class="title">
+                            <h3>${nameLocation.getName()}</h3>
+                        </div>
+                        <ul class="products-grid-movie">
+                            <c:forEach items="${cinemaScreeningTimes[nameLocation.getCinemaID()]}" var="screeningTime">
+                                <li class="item">
+                                    <a href="#"><span>${screeningTime.getStartTime()}</span></a>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                </c:forEach>
+                <% } %>
+            </div>
+
+
         </div>
 
 
