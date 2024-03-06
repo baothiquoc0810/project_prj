@@ -21,6 +21,7 @@ import modal.Theaters;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import modal.Seats;
 
 public class DAO extends DBContext {
 
@@ -269,8 +270,34 @@ public class DAO extends DBContext {
                 Cinemas c = new Cinemas(rs.getInt("cinemaID"), rs.getString("cinemasName"), rs.getDate("movieDate"), l);
                 Theaters t = new Theaters(rs.getInt("theaterID"), c, rs.getInt("theaterNumber"));
                 Movies m = new Movies(rs.getInt("movieID"), rs.getString("title"), rs.getString("description"), rs.getDate("releaseDate"), rs.getString("posterImage"), rs.getInt("duration"));
-                ScreeningTimes st = new ScreeningTimes(rs.getInt("screeningID"), t, m, rs.getTime("startTime"), rs.getTime("endTime"));
+                ScreeningTimes st = new ScreeningTimes(rs.getInt("screeningID"), t, m, rs.getTimestamp("startTime"), rs.getTimestamp("endTime"));
                 list.add(st);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+
+    //get list seats by screeningID
+    public List<Seats> getScreeningTimesByID(int screeningID) {
+        String sql = "select l.locationID, l.name as location, c.cinemaID, c.name as cinemasName, c.movieDate, t.theaterID, t.theaterNumber, st.screeningID, st.startTime, st.endTime, m.movieID,m.title, m.description, m.releaseDate, m.posterImage, m.duration, s.seatID, s.seatType, s.seatNumber from [Location] l join Cinemas c on l.locationID = c.locationID join Theaters t on c.cinemaID = t.cinemaID join ScreeningTimes st on t.theaterID = st.theaterID join Movies m on st.movieID = m.movieID join Seats s on s.screeningID = st.screeningID where st.screeningID = ?";
+        List<Seats> list = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, screeningID);
+            ResultSet rs = ps.executeQuery();
+            //if (rs.next()) {
+            while (rs.next()) {
+                Location l = new Location(rs.getInt("locationID"), rs.getString("location"));
+                Cinemas c = new Cinemas(rs.getInt("cinemaID"), rs.getString("cinemasName"), rs.getDate("movieDate"), l);
+                Theaters t = new Theaters(rs.getInt("theaterID"), c, rs.getInt("theaterNumber"));
+                Movies m = new Movies(rs.getInt("movieID"), rs.getString("title"), rs.getString("description"), rs.getDate("releaseDate"), rs.getString("posterImage"), rs.getInt("duration"));
+                ScreeningTimes st = new ScreeningTimes(rs.getInt("screeningID"), t, m, rs.getTimestamp("startTime"), rs.getTimestamp("endTime"));
+                Seats s = new Seats(rs.getInt("SeatID"), rs.getString("seatType"), rs.getString("seatNumber"), st);
+                list.add(s);
+                // } else {
+                //     System.out.println("No rows found.");
             }
         } catch (SQLException e) {
             System.out.println(e);
@@ -309,10 +336,19 @@ public class DAO extends DBContext {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        // Test hàm getAllFlimList
-       List<ScreeningTimes> list = dao.getAllFlimList(2, 7, date);
-        for (ScreeningTimes st : list) {
-            System.out.println(st.getStartTime() + " "+ st.getTheaterID().getCinemaID().getName());
+        //test get screening by id
+        List<Seats> list = dao.getScreeningTimesByID(109);
+        List<String> listSeatNumber = new ArrayList<>();
+        for (Seats seat : list) {
+            if(seat.getSeatType().equals("Đã đặt")){
+
+            //list seatID da dat    
+            listSeatNumber.add(seat.getSeatNumber());
+        }
+        }
+        //print all listSeatNumber
+        for (String string : listSeatNumber) {
+            System.out.println(string);
         }
     }
 }
