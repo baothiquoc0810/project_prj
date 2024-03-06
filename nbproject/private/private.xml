@@ -3,9 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/bquoc/Documents/NetBeansProjects/Project/web/assets/css/style.css</file>
-            <file>file:/C:/Users/bquoc/Documents/NetBeansProjects/Project/src/java/controller/LogoutServlet.java</file>
-            <file>file:/C:/Users/bquoc/Documents/NetBeansProjects/Project/src/java/controller/BookingTicketServlet.java</file>
+            <file>file:/C:/Users/bquoc/Documents/NetBeansProjects/Project/src/java/dal/DAO.java</file>
+            <file>file:/C:/Users/bquoc/Documents/NetBeansProjects/Project/src/java/modal/ScreeningTimes.java</file>
             <file>file:/C:/Users/bquoc/Documents/NetBeansProjects/Project/web/WEB-INF/views/bookingTicket.jsp</file>
         </group>
     </open-files>

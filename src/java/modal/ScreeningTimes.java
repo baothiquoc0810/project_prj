@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package modal;
-import java.sql.Time;
+import java.sql.Timestamp;
 /**
  *
  * @author bquoc
@@ -12,13 +12,13 @@ public class ScreeningTimes {
     private int screeningID;
     private Theaters theaterID;
     private Movies movieID;
-    private Time startTime;
-    private Time endTime;
+    private Timestamp startTime;
+    private Timestamp endTime;
 
     public ScreeningTimes() {
     }
 
-    public ScreeningTimes(int screeningID, Theaters theaterID, Movies movieID, Time startTime, Time endTime) {
+    public ScreeningTimes(int screeningID, Theaters theaterID, Movies movieID, Timestamp startTime, Timestamp endTime) {
         this.screeningID = screeningID;
         this.theaterID = theaterID;
         this.movieID = movieID;
@@ -52,19 +52,19 @@ public class ScreeningTimes {
 
     
 
-    public Time getStartTime() {
+    public Timestamp getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Time startTime) {
+    public void setStartTime(Timestamp startTime) {
         this.startTime = startTime;
     }
 
-    public Time getEndTime() {
+    public Timestamp getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Time endTime) {
+    public void setEndTime(Timestamp endTime) {
         this.endTime = endTime;
     }
     

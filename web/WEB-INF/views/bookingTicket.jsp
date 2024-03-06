@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -139,7 +140,7 @@
                         <ul class="products-grid-movie">
                             <c:forEach items="${cinemaScreeningTimes[nameLocation.getCinemaID()]}" var="screeningTime">
                                 <li class="item">
-                                    <a href="#"><span>${screeningTime.getStartTime()}</span></a>
+                                    <a href="seatNumber?screeningID=${screeningTime.getScreeningID()}"><span><fmt:formatDate value="${screeningTime.getStartTime()}" pattern="HH:mm" /></span></a>
                                 </li>
                             </c:forEach>
                         </ul>

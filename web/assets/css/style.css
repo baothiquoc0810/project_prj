@@ -658,3 +658,214 @@ img {
     text-align: center;
     margin-top: 3px;
 }
+
+
+/* seat number page */
+
+.main-container-seat-booking{
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0px !important;
+}
+
+.booking-progress{
+    width:100%;
+    border: 2px solid #d4d3c9;
+    display: block;
+}
+
+.booking-progress .page-title{
+    width: 100%;
+    text-align: center;
+    margin-top: 0px;
+    margin-bottom: 0;
+    background: #222;
+    height: 46px;
+    color:white;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.booking-progress .page-title h3{
+    text-transform: uppercase;
+    color: #fff;
+    line-height: 32px;
+    padding: 5px;
+    margin: 0;
+}
+
+.top-content{
+    width: 100%;
+    padding: 10px;
+    border-bottom: 2px solid #d4d3c9;
+    background: #fff1ce;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.products-list p {
+    margin: 0;
+    font-weight: bold;
+}
+
+.screen{
+    width: 100%;
+    height: 45px;
+    margin: 40px auto 40px;
+    text-align: center;
+    background: url(https://www.cgv.vn/skin/frontend/cgv/default/images/bg-cgv/bg-screen.png) no-repeat top center transparent;
+    background-size: 100% auto;
+}
+
+.seats-container {
+    width: auto;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.ticketbox .row{
+    display: flex;
+    justify-content: center ;
+}
+
+.seat-standard {
+    border: 1px solid #01c73c;
+    cursor: pointer;
+}
+.seat-selected {
+    font-weight: bold;
+    background: #b11500 !important;
+    border-color: #b11500 !important;
+    color:white;
+}
+
+.seat-occupied{
+    background-color: #bbb;
+}
+
+.seat {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    vertical-align: middle;
+    margin: 2px 1px;
+    font-size: 7pt;
+    padding: 1px 0;
+}
+
+.ticketbox-notice{
+    display: flex;
+    justify-content: center;
+}
+.iconlist {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.icon {
+    margin: 0 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    position: relative; /* Thêm thuộc tính này để sử dụng pseudo-element */
+}
+
+.icon:before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    width: 18px;
+    height: 18px;
+    margin-right: 5px; /* Chuyển margin từ quy tắc chung sang quy tắc này */
+}
+
+.icon.checked:before {
+    background-color: #b11500;
+}
+
+.icon.occupied:before {
+    background-color: #bbb;
+}
+
+.bottom-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.minicart-wrapper {
+    width: 100%;
+    font-weight: bold;
+    font-size: 15px;
+    background-color: black;
+    color:white;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.minicart-wrapper ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.minicart-wrapper ul li {
+    margin-right: 45px;
+    margin-bottom: 10px;
+}
+
+.product-detail {
+    display: flex;
+    align-items: center;
+}
+
+.product-detail img {
+    margin-right: 10px;
+}
+
+.item {
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.item p {
+    margin: 5px 0;
+}
+
+.item-first {
+    display: flex;
+}
+
+.item-first .product-detail {
+    flex: 1;
+}
+
+.item-first img {
+    margin: 10px;
+    width: 74px;
+    height: 108px;
+}
+
+input[type="submit"] {
+    background-color: #4CAF50; /* Màu nền */
+    border: none;
+    color: white; /* Màu chữ */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px; /* Kích thước chữ */
+    padding: 25px 60px; /* Kích thước nút */
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 8px; /* Bo tròn viền */
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049; /* Màu nền hover */
+}
+
+
+
