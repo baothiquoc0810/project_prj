@@ -37,18 +37,18 @@
                         data-ride="carousel"
                         data-interval="4000"
                         >
-                        <div class="carousel-inner">
+                        <div class="carousel-inner" style="height:551px">
                             <div class="carousel-item active">
                                 <img
                                     class="d-block w-100"
-                                    src="https://i.ytimg.com/vi/rZYVIK0R6sg/maxresdefault.jpg"
+                                    src="https://images.bauerhosting.com/empire/2023/08/empoct23-dune-part-two-crop-cover.jpg?ar=16%3A9&fit=crop&crop=top&auto=format&w=undefined&q=80"
                                     alt="First slide"
                                     />
                             </div>
                             <div class="carousel-item">
                                 <img
                                     class="d-block w-100"
-                                    src="https://www.cgv.vn/media/catalog/product/cache/1/image/1800x/71252117777b696995f01934522c402d/1/9/1920x1080_8_.jpg"
+                                    src="https://medianews.thieunien.vn/uploads/2024/01/07/405244875-945815760242027-4346851287959785821-n-1704603519.jpg"
                                     alt="Second slide"
                                     />
                             </div>
@@ -56,7 +56,7 @@
                             <div class="carousel-item">
                                 <img
                                     class="d-block w-100"
-                                    src="https://cdn.popsww.com/blog/sites/2/2023/07/doraemon-movie-43.jpg"
+                                    src="https://cveidm2974.expandcart.com/ecdata/stores/CVEIDM2974/image/data/products/1708917293_thumbspyxfamMovieVN.jpg"
                                     alt="Third slide"
                                     />
                             </div>

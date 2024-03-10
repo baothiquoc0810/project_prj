@@ -270,8 +270,8 @@ li {
 
 .curr-list .num {
     position: absolute;
-    left: 0;
-    bottom: 4px;
+    left: -1px;
+    bottom:0;
     z-index: 11;
     display: block;
     width: 100%;

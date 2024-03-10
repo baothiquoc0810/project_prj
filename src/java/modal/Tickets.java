@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package modal;
-import java.sql.Timestamp;  
+import java.sql.Date;  
 
 /**
  *
@@ -15,18 +15,22 @@ public class Tickets {
     private Movies movieID;
     private Cinemas cinemaID;
     private String price;
-    private Timestamp purchaseDate;
+    private Date purchaseDate;
+    private Seats seatID;
+    private Orders orderID;
 
     public Tickets() {
     }
 
-    public Tickets(int ticketID, Users userID, Movies movieID, Cinemas cinemaID, String price, Timestamp purchaseDate) {
+    public Tickets(int ticketID, Users userID, Movies movieID, Cinemas cinemaID, String price, Date purchaseDate, Seats seatID, Orders orderID) {
         this.ticketID = ticketID;
         this.userID = userID;
         this.movieID = movieID;
         this.cinemaID = cinemaID;
         this.price = price;
         this.purchaseDate = purchaseDate;
+        this.seatID = seatID;
+        this.orderID = orderID;
     }
 
     public int getTicketID() {
@@ -69,12 +73,29 @@ public class Tickets {
         this.price = price;
     }
 
-    public Timestamp getPurchaseDate() {
+    public Date getPurchaseDate() {
         return purchaseDate;
     }
 
-    public void setPurchaseDate(Timestamp purchaseDate) {
+    public void setPurchaseDate(Date purchaseDate) {
         this.purchaseDate = purchaseDate;
     }
+
+    public Seats getSeatID() {
+        return seatID;
+    }
+
+    public void setSeatID(Seats seatID) {
+        this.seatID = seatID;
+    }
+
+    public Orders getOrderID() {
+        return orderID;
+    }
+
+    public void setOrderID(Orders orderID) {
+        this.orderID = orderID;
+    }
+    
 
 }

@@ -16,6 +16,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import modal.ScreeningTimes;
+import modal.SeatWithScreeningTime;
 import modal.Seats;
 import modal.Users;
 
@@ -75,19 +78,21 @@ public class SeatNumberServlet extends HttpServlet {
                     return;
                 }
                 DAO d = new DAO();
-                List<Seats> seats = d.getScreeningTimesByID(Integer.parseInt(screeningID));
+                List<SeatWithScreeningTime> SWS = d.getSWSByID(Integer.parseInt(screeningID));
+                ScreeningTimes screeningTimes = d.getScreeningTimesByID(Integer.parseInt(screeningID));
                 //get list seatNumber from list seats
-                List<String> listSeatNumber = new ArrayList<>();
-                for (Seats seat : seats) {
-                    if(seat.getSeatType().equals("Đã đặt")){
-
-                    //list seatID da dat    
-                    listSeatNumber.add(seat.getSeatNumber());
-                }
-                }
-
-                request.setAttribute("listSeatID", listSeatNumber);
-                request.setAttribute("seats", seats);
+//                List<String> listSeatNumber = new ArrayList<>();
+//                for (Seats seat : seats) {
+//                    if(seat.getSeatType().equals("Đã đặt")){
+//
+//                    //list seatID da dat    
+//                    listSeatNumber.add(seat.getSeatNumber());
+//                }
+//                }
+//
+//                request.setAttribute("listSeatID", listSeatNumber);
+                request.setAttribute("screeningTimes", screeningTimes);
+                request.setAttribute("SWS", SWS);
 
                 request.getRequestDispatcher("/WEB-INF/views/seatNumber.jsp").forward(request, response);
 
