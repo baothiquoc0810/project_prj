@@ -34,7 +34,7 @@
                     <div class="header-my-ticket">
                         <p>
                             <i class="fa-solid fa-ticket fa-xl"></i>
-                            <a href="#">VÉ CỦA TÔI</a>
+                            <a href="historyPayment?userID=${sessionScope.account.getUserID()}">VÉ CỦA TÔI</a>
                         </p>
                     </div>
                     <div class="header-account" style="display: contents">
