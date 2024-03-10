@@ -16,6 +16,7 @@ import modal.Genres;
 import modal.Location;
 import modal.MovieGenres;
 import modal.Movies;
+import modal.Orders;
 import modal.ScreeningTimes;
 import modal.Theaters;
 import java.sql.Date;
@@ -23,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import modal.SeatWithScreeningTime;
 import modal.Seats;
+import modal.Tickets;
 
 public class DAO extends DBContext {
 
@@ -349,8 +351,9 @@ public class DAO extends DBContext {
 
     //inrset into seats
     public void insertSeats(int screeningID, String seatNumber) {
-        String sql = "insert into Seats (screeningID, seatNumber)\r\n" + //
-                        "values(?, ?)";
+        String sql = "insert into Seats (screeningID, seatNumber)\r\n"
+                + //
+                "values(?, ?)";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, screeningID);
@@ -380,7 +383,7 @@ public class DAO extends DBContext {
     }
 
     //insert into tickets
-    public void insertTicket(int userID, int movieID, int cinemaID,String price, Date purchaseDate, int seatID, int orderID){
+    public void insertTicket(int userID, int movieID, int cinemaID, String price, Date purchaseDate, int seatID, int orderID) {
         String sql = "INSERT INTO Tickets (userID, movieID, cinemaID, price, purchaseDate, seatID, orderID) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -390,18 +393,18 @@ public class DAO extends DBContext {
             ps.setString(4, price);
             ps.setDate(5, purchaseDate);
             ps.setInt(6, seatID);
-            ps.setInt(7,orderID);
+            ps.setInt(7, orderID);
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e);
         }
-    } 
+    }
 
-    
     //insert into order
-    public void insertOrder(int userID, int movieID, int quantity, String allPrice){
-        String sql = "insert into Orders (userID, movieID, quantity, allPrice)\r\n" + //
-                        "values(?, ?, ?, ?)";
+    public void insertOrder(int userID, int movieID, int quantity, String allPrice) {
+        String sql = "insert into Orders (userID, movieID, quantity, allPrice)\r\n"
+                + //
+                "values(?, ?, ?, ?)";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, userID);
@@ -415,7 +418,7 @@ public class DAO extends DBContext {
     }
 
     //get orderID by userID
-    public int getOrderIDByUserID(int userID){
+    public int getOrderIDByUserID(int userID) {
         String sql = "select top 1 * from Orders where userID = ? order by orderID desc";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -430,12 +433,106 @@ public class DAO extends DBContext {
         return 0;
     }
 
+    //get all tickets by userID
+    public List<Tickets> getAllTicketsByUserID(int userID) {
+        List<Tickets> list = new ArrayList<>();
+        String sql = "select t.ticketID, u.userID, m.movieID, c.cinemaID, t.price, t.purchaseDate, s.seatID, o.orderID,u.displayName, u.username, u.password, r.roleID, r.name as roleName, m.title, m.description, m.releaseDate, m.posterImage, m.duration, m.duration, c.name as cinemasName, c.movieDate, l.locationID, l.name as locationName, st.screeningID, s.seatNumber, th.theaterID, st.startTime, st.endTime, th.theaterNumber, o.quantity, o.allPrice from Tickets t \n"
+                + "join Users u on t.userID = u.userID\n"
+                + "join Roles r on r.roleID = u.roleID\n"
+                + "join Movies m on m.movieID = t.movieID\n"
+                + "join Cinemas c on c.cinemaID = t.cinemaID\n"
+                + "join Location l on c.locationID = l.locationID\n"
+                + "join Seats s on s.seatID = t.seatID\n"
+                + "join ScreeningTimes st on s.screeningID = st.screeningID\n"
+                + "join Theaters th on th.theaterID = st.theaterID\n"
+                + "join Orders o on o.orderID = t.orderID\n"
+                + "where u.userID = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Roles r = new Roles(rs.getInt("roleID"), rs.getString("roleName"));
+                Users u = new Users(rs.getInt("userID"), rs.getString("displayName"), rs.getString("username"), rs.getString("password"), r);
+                Location l = new Location(rs.getInt("locationID"), rs.getString("locationName"));
+                Cinemas c = new Cinemas(rs.getInt("cinemaID"), rs.getString("cinemasName"), rs.getDate("movieDate"), l);
+                Movies m = new Movies(rs.getInt("movieID"), rs.getString("title"), rs.getString("description"), rs.getDate("releaseDate"), rs.getString("posterImage"), rs.getInt("duration"));
+                Theaters th = new Theaters(rs.getInt("theaterID"), c, rs.getInt("theaterNumber"));
+                ScreeningTimes st = new ScreeningTimes(rs.getInt("screeningID"), th, m, rs.getTimestamp("startTime"), rs.getTimestamp("endTime"));
+                Seats s = new Seats(rs.getInt("seatID"), rs.getString("seatNumber"), st);
+                Orders o = new Orders(rs.getInt("orderID"), u, m, rs.getInt("quantity"), rs.getString("allPrice"));
+                Tickets t = new Tickets(rs.getInt("ticketID"), u, m, c, rs.getString("price"), rs.getDate("purchaseDate"), s, o);
+                list.add(t);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+
+    //count pagination tickets by userID
+    public int countPaginationTickets(int userID) {
+        String sql = "select count(*) from Tickets where userID = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return 0;
+    }
+
+    //pagination list tickets by userID
+    public List<Tickets> paginationTickets(int userID, int index) {
+        List<Tickets> list = new ArrayList<>();
+        String sql = "select t.ticketID, u.userID, m.movieID, c.cinemaID, t.price, t.purchaseDate, s.seatID, o.orderID,u.displayName, u.username, u.password, r.roleID, r.name as roleName, m.title, m.description, m.releaseDate, m.posterImage, m.duration, m.duration, c.name as cinemasName, c.movieDate, l.locationID, l.name as locationName, st.screeningID, s.seatNumber, th.theaterID, st.startTime, st.endTime, th.theaterNumber, o.quantity, o.allPrice from Tickets t \r\n" + //
+                        "join Users u on t.userID = u.userID\r\n" + //
+                        "join Roles r on r.roleID = u.roleID\r\n" + //
+                        "join Movies m on m.movieID = t.movieID\r\n" + //
+                        "join Cinemas c on c.cinemaID = t.cinemaID\r\n" + //
+                        "join Location l on c.locationID = l.locationID\r\n" + //
+                        "join Seats s on s.seatID = t.seatID\r\n" + //
+                        "join ScreeningTimes st on s.screeningID = st.screeningID\r\n" + //
+                        "join Theaters th on th.theaterID = st.theaterID\r\n" + //
+                        "join Orders o on o.orderID = t.orderID\r\n" + //
+                        "where u.userID = ?\r\n" + //
+                        "order by t.ticketID\r\n" + //
+                        "offset ? rows fetch next 5 rows only";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userID);
+            ps.setInt(2, (index - 1) * 5);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Roles r = new Roles(rs.getInt("roleID"), rs.getString("roleName"));
+                Users u = new Users(rs.getInt("userID"), rs.getString("displayName"), rs.getString("username"), rs.getString("password"), r);
+                Location l = new Location(rs.getInt("locationID"), rs.getString("locationName"));
+                Cinemas c = new Cinemas(rs.getInt("cinemaID"), rs.getString("cinemasName"), rs.getDate("movieDate"), l);
+                Movies m = new Movies(rs.getInt("movieID"), rs.getString("title"), rs.getString("description"), rs.getDate("releaseDate"), rs.getString("posterImage"), rs.getInt("duration"));
+                Theaters th = new Theaters(rs.getInt("theaterID"), c, rs.getInt("theaterNumber"));
+                ScreeningTimes st = new ScreeningTimes(rs.getInt("screeningID"), th, m, rs.getTimestamp("startTime"), rs.getTimestamp("endTime"));
+                Seats s = new Seats(rs.getInt("seatID"), rs.getString("seatNumber"), st);
+                Orders o = new Orders(rs.getInt("orderID"), u, m, rs.getInt("quantity"), rs.getString("allPrice"));
+                Tickets t = new Tickets(rs.getInt("ticketID"), u, m, c, rs.getString("price"), rs.getDate("purchaseDate"), s, o);
+                list.add(t);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+
     public static void main(String[] args) {
         DAO dao = new DAO();
-        //test inset into tickets   
-        java.time.LocalDate localDate = java.time.LocalDate.now();
-        java.sql.Date sqlDate = java.sql.Date.valueOf(localDate);
-        dao.insertTicket(13, 1, 3, "75000", sqlDate, 10163, 2);
-        
+        //test get all tickets by userID
+        List<Tickets> list = dao.getAllTicketsByUserID(13);
+        for (Tickets tickets : list) {
+            System.out.println(tickets.getPrice());
+        }
+
     }
 }

@@ -34,10 +34,17 @@
                                 </a>
                             </li>
                             <li style="background-color:${backgroundColorSecond}">
-                                <a style="color: ${colorSecond}"  href="#">
+                                <a style="color: ${colorSecond}"  href="historyPayment?userID=${sessionScope.account.getUserID()}">
                                 LỊCH SỬ GIAO DỊCH
                                 </a>
                             </li>
+                            <c:if test="${sessionScope.account.role.name.equals('admin')}">
+                                <li style="background-color:${backgroundColorSecond}">
+                                    <a style="color: ${colorSecond}"  href="addNewMovie">
+                                        THÊM PHIM MỚI
+                                    </a>
+                                </li>
+                            </c:if>
                         </ul>
 
                     </div>
