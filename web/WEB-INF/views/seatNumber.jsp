@@ -23,16 +23,10 @@
                     </div>
                     <div class="top-content">
                         <div class="products-list">
-                            <c:set var="count" value="0" />
-                            <c:forEach items="${seats}" var="seat">
-                                <c:choose>
-                                    <c:when test="${seat.getSeatType() == 'Chưa đặt'}">
-                                        <c:set var="count" value="${count + 1}" />
-                                    </c:when>
-                                </c:choose>
-                            </c:forEach>
-                            <p>${seats[0].getScreeningID().getTheaterID().getCinemaID().getName()} | Cinema ${seats[0].getScreeningID().getTheaterID().getTheaterNumber()} | Số ghế (${100 - count}/${count})</p>
-                            <p><fmt:formatDate value="${seats[0].getScreeningID().getStartTime()}" pattern="yyyy:MM:dd HH:mm" /> ~ <fmt:formatDate value="${seats[0].getScreeningID().getEndTime()}" pattern="yyyy:MM:dd HH:mm" /></p>
+                            <c:set var="count" value="${SWS.size()}" />
+
+                            <p>${screeningTimes.getTheaterID().getCinemaID().getName()} | Phòng Cinema ${screeningTimes.getTheaterID().getTheaterNumber()} | Số ghế (${100 - count}/100)</p>
+                            <p><fmt:formatDate value="${screeningTimes.getStartTime()}" pattern="yyyy:MM:dd HH:mm" /> ~ <fmt:formatDate value="${screeningTimes.getEndTime()}" pattern="yyyy-MM-dd HH:mm" /></p>
                         </div>
                     </div>
                     <div class="main-content">
@@ -40,17 +34,23 @@
                             <div class="ticketbox">
                                 <div class="screen"></div>
                                 <div class="row">
-                                    <form style="width:97%" id="seatForm" action="seatNumber">
+                                    <form style="width:97%" id="seatForm" action="payment" onsubmit="return validateForm()">
                                         <div class="seats-container">
 
                                             <c:forEach var="row" items="${'ABCDEFGHIJ'.split('')}">
                                                 <c:forEach var="col" begin="1" end="10">
                                                     <c:set var="seatCode" value="${row}${String.format('%02d', col)}" />
-                                                    <input type="hidden" name="selectedSeats" id="${seatCode}" value="false">
-                                                    <c:if test="${listSeatID.contains(seatCode)}">
-                                                        <label class="seat seat-occupied active" loc="${seatCode}" price="75000">${seatCode}</label>
-                                                    </c:if>
-                                                    <c:if test="${!listSeatID.contains(seatCode)}">
+                                                    <c:set var="seatFound" value="false" />
+                                                    <c:forEach var="s" items="${SWS}">
+                                                        <c:if test="${s.getSeatID().getSeatNumber().equals(seatCode)}">
+                                                            <label class="seat seat-occupied active" loc="${seatCode}" price="75000">${seatCode}</label>
+                                                            <c:set var="seatFound" value="true" />
+                                                        </c:if>
+                                                        <c:if test="${seatFound}">
+                                                            <c:out value="" />
+                                                        </c:if>
+                                                    </c:forEach>
+                                                    <c:if test="${!seatFound}">
                                                         <label class="seat seat-standard" onclick="toggleSeat(this)" loc="${seatCode}" price="75000">${seatCode}</label>
                                                     </c:if>
                                                 </c:forEach>
@@ -72,20 +72,25 @@
                                                 <ul>
                                                     <li class="item-first">
                                                         <div class="product-detail">
-                                                            <img src="https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/1/thumbnail/dc33889b0f8b5da88052ef70de32f1cb/p/o/poster_dune_2_bb_3_no_qr_1_.jpg" width="74px" height="108px" alt="alt"/>
-                                                            <p>DUNE: HÀNH TINH CÁT - PHẦN HAI</p>
+                                                            <img src="./assets/images/posterImages/${screeningTimes.getMovieID().getPosterImage()}" width="74px" height="108px" alt="alt"/>
+                                                            <p>${screeningTimes.getMovieID().getTitle().toUpperCase()}</p>
                                                         </div>
                                                     </li>
                                                     <li class="item" style="width: 210px; word-break: break-word;margin-right: 0;width: 300px">
-                                                        <p>Rạp ${seats[0].getScreeningID().getTheaterID().getCinemaID().getName()}</p>
-                                                        <p>Suất chiếu <fmt:formatDate value="${seats[0].getScreeningID().getStartTime()}" pattern="HH:mm"/>, <fmt:formatDate value="${seats[0].getScreeningID().getStartTime()}" pattern="yyyy:MM:dd" /></p>
-                                                        <p>Phòng Cinema ${seats[0].getScreeningID().getTheaterID().getTheaterNumber()}</p>
+                                                        <p>Rạp ${screeningTimes.getTheaterID().getCinemaID().getName()}</p>
+                                                        <p>Suất chiếu <fmt:formatDate value="${screeningTimes.getStartTime()}" pattern="HH:mm"/>, <fmt:formatDate value="${seats[0].getScreeningID().getStartTime()}" pattern="yyyy-MM-dd" /></p>
+                                                        <p>Phòng Cinema ${screeningTimes.getTheaterID().getTheaterNumber()}</p>
                                                         <p>Ghế: <span id="selectedSeats"></span></p>
                                                     </li>
                                                     <li class="item">
                                                         <p>Tổng tiền: <span id="totalPrice">0</span></p>
                                                     </li>
                                                 </ul> 
+                                                <!--<input type="hidden" name=""-->
+                                                <input type="hidden" name="selectedSeats" id="hiddenSelectedSeats">
+                                                <input type="hidden" name="totalPrice" id="hiddenTotalPrice">
+                                                <input type="hidden" name="screeningID" value="${screeningTimes.getScreeningID()}">
+
                                                 <input style="font-weight: bold; font-size: 20px" type="submit" value="ĐẶT VÉ">
                                             </div>
                                         </div>
@@ -97,34 +102,48 @@
 
                     <script>
                         function toggleSeat(seat) {
-                            var checkbox = document.getElementById(seat.getAttribute('loc'));
-                            checkbox.value = checkbox.value === 'true' ? 'false' : 'true';
                             seat.classList.toggle('seat-selected');
 
-                            // Hiển thị ghế đã chọn
-                            var selectedSeats = document.getElementById("selectedSeats");
-                            var selectedSeatCodes = document.querySelectorAll("input[name='selectedSeats'][value='true']");
-                            var seatCodesString = "";
-                            selectedSeatCodes.forEach(function (seatCode) {
-                                seatCodesString += seatCode.id + ", ";
-                            });
-                            seatCodesString = seatCodesString.slice(0, -2); // Loại bỏ dấu ', ' ở cuối
-                            selectedSeats.innerHTML = seatCodesString;
+                            // Get all selected seats
+                            var selectedSeats = document.querySelectorAll('.seat-selected');
 
-                            // Tính tổng tiền
+                            // Create an array to store the seat codes
+                            var seatCodes = [];
+
+                            // Loop through the selected seats and add their codes to the array
+                            selectedSeats.forEach(function (seat) {
+                                seatCodes.push(seat.getAttribute('loc'));
+                            });
+
+                            // Join the seat codes with a comma and set the value of the hidden input field
+                            document.getElementById('hiddenSelectedSeats').value = seatCodes.join(', ');
+
+                            document.getElementById('selectedSeats').textContent = seatCodes.join(', ');
+
+                            // Calculate the total price
                             var totalPrice = document.getElementById("totalPrice");
-                            var selectedSeatsCount = selectedSeatCodes.length;
-                            var pricePerSeat = 75000; // Giá tiền cho mỗi ghế
+                            var hiddenTotalPrice = document.getElementById("hiddenTotalPrice");
+                            var selectedSeatsCount = seatCodes.length;
+                            var pricePerSeat = 75000; // Price per seat
                             var total = selectedSeatsCount * pricePerSeat;
                             totalPrice.innerHTML = formatMoney(total);
+                            hiddenTotalPrice.value = total; // Set the value of the hidden input field
 
-                            // Hàm định dạng số tiền
+                            // Function to format money
                             function formatMoney(amount) {
                                 return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                             }
                         }
+                        function validateForm() {
+                            var hiddenSelectedSeats = document.getElementById('hiddenSelectedSeats');
+                            if (hiddenSelectedSeats.value === '') {
+                                alert('Please choose your seats first.');
+                                return false;
+                            } else {
+                                return confirm('Do you agree to book this seat?');
+                            }
+                        }
                     </script>
-
                 </div>
             </div>
         </div>

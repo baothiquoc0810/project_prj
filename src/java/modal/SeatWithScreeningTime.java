@@ -8,34 +8,24 @@ package modal;
  *
  * @author bquoc
  */
-public class Seats {
-    private int seatID;
-    private String seatNumber;
+public class SeatWithScreeningTime {
+    private Seats seatID;
     private ScreeningTimes screeningID;
 
-    public Seats() {
+    public SeatWithScreeningTime() {
     }
 
-    public Seats(int seatID, String seatNumber, ScreeningTimes screeningID) {
+    public SeatWithScreeningTime(Seats seatID, ScreeningTimes screeningID) {
         this.seatID = seatID;
-        this.seatNumber = seatNumber;
         this.screeningID = screeningID;
     }
 
-    public int getSeatID() {
+    public Seats getSeatID() {
         return seatID;
     }
 
-    public void setSeatID(int seatID) {
+    public void setSeatID(Seats seatID) {
         this.seatID = seatID;
-    }
-
-    public String getSeatNumber() {
-        return seatNumber;
-    }
-
-    public void setSeatNumber(String seatNumber) {
-        this.seatNumber = seatNumber;
     }
 
     public ScreeningTimes getScreeningID() {
@@ -45,7 +35,6 @@ public class Seats {
     public void setScreeningID(ScreeningTimes screeningID) {
         this.screeningID = screeningID;
     }
-    
     
     
 }
