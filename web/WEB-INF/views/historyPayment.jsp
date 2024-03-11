@@ -113,13 +113,13 @@
                                                                             <h4 class="mb-0">${ticket.getMovieID().getTitle().toUpperCase()}</h4>
                                                                             <ul>
                                                                                 <li class="item" style="width: 210px; word-break: break-word;margin-right: 0;width: 300px">
+                                                                                    <p><span>Mã vé:</span> ${ticket.getTicketID()}</p>
                                                                                     <p><span>Rạp:</span> ${ticket.getCinemaID().getName()}</p>
                                                                                     <p><span>Suất chiếu:</span> <fmt:formatDate value="${ticket.getSeatID().getScreeningID().getStartTime()}" pattern="HH:mm"/>, <fmt:formatDate value="${ticket.getSeatID().getScreeningID().getStartTime()}" pattern="yyyy-MM-dd" /></p>
-                                                                                <p><span>Phòng Cinema: </span>Cinemas ${ticket.getSeatID().getScreeningID().getTheaterID().getTheaterNumber()}</p>
-                                                                                <p><span>Ghế:</span> <span id="selectedSeats">${ticket.getSeatID().getSeatNumber()}</span></p>
+                                                                                    <p><span>Phòng Cinema: </span>Cinemas ${ticket.getSeatID().getScreeningID().getTheaterID().getTheaterNumber()}</p>
+                                                                                    <p><span>Ghế:</span> <span id="selectedSeats">${ticket.getSeatID().getSeatNumber()}</span></p>
                                                                                 </li>
                                                                             </ul>
-
                                                                         </div>
                                                                     </div>
                                                                 </td>
@@ -133,27 +133,24 @@
                                         </div>
                                     </div>
                                 </c:forEach>
+                                <nav aria-label="...">
+                                    <div class="pagination-wrapper">
+                                        <ul class="pagination" style="margin-right:15px; margin-top: 20px; justify-content: end;">
+                                            <li class="page-item ${tag == 1 ? "disabled" : ""}">
+                                                <a class="page-link" href="historyPayment?userID=${account.getUserID()}&index=${tag - 1}" >Previous</a>
+                                            </li>
+                                            <c:forEach begin="1" end="${endPage}" var="i">
+                                                <li class="page-item ${tag == i ? "active" : ""}"><a class="page-link" href="historyPayment?userID=${account.getUserID()}&index=${i}">${i}</a></li>
+                                                </c:forEach>
+                                            <li class="page-item ${tag == endPage ? "disabled" : ""}">
+                                                <a class="page-link" href="historyPayment?userID=${account.getUserID()}&index=${tag + 1}">Next</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </nav>
                             </c:otherwise>
                         </c:choose>
                     </div>
-
-                    <nav aria-label="...">
-                        <div class="pagination-wrapper">
-                            <ul class="pagination" style="margin-right:15px; margin-top: 20px; justify-content: end;">
-                                <li class="page-item ${tag == 1 ? "disabled" : ""}">
-                                    <a class="page-link" href="historyPayment?userID=${account.getUserID()}&index=${tag - 1}" >Previous</a>
-                                </li>
-                                <c:forEach begin="1" end="${endPage}" var="i">
-                                    <li class="page-item ${tag == i ? "active" : ""}"><a class="page-link" href="historyPayment?userID=${account.getUserID()}&index=${i}">${i}</a></li>
-                                    </c:forEach>
-                                <li class="page-item ${tag == endPage ? "disabled" : ""}">
-                                    <a class="page-link" href="historyPayment?userID=${account.getUserID()}&index=${tag + 1}">Next</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
-
-
                 </div>
             </div>
         </div>
