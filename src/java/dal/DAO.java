@@ -526,6 +526,53 @@ public class DAO extends DBContext {
         return list;
     }
 
+    //insert new movie
+    public void insertNewMovie(String title, String description, Date releaseDate, String posterImage, int duration){
+        String sql = "insert into Movies (title, description, releaseDate, posterImage, duration)\r\n" + //
+                     "values(?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, title);
+            ps.setString(2, description);
+            ps.setDate(3, releaseDate);
+            ps.setString(4, posterImage);
+            ps.setInt(5, duration);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
+    //select the movie recently added
+    public Movies getMovieRecentlyAdded(){
+        String sql = "select top 1 * from Movies order by movieID desc";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Movies m = new Movies(rs.getInt("movieID"), rs.getString("title"), rs.getString("description"), rs.getDate("releaseDate"), rs.getString("posterImage"), rs.getInt("duration"));
+                return m;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
+    //insert movie genre
+    public void insertMovieGenre(int genreID, int movieID){
+        String sql = "insert into MovieGenres (genreID, movieID)\r\n" + //
+                     "values(?, ?)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, genreID);
+            ps.setInt(2, movieID);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
     public static void main(String[] args) {
         DAO dao = new DAO();
         //test get all tickets by userID
