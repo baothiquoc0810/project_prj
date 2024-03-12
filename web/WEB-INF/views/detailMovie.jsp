@@ -79,6 +79,11 @@
                         <div class="product-detail">Thời Lượng: <span class="detail-movie">${movie.duration} Phút</span></div>
                     </div>
                     <button><a style="text-decoration: none; color:#fff" href="booking?movieid=${movie.movieID}&date=<%=(daysOfMonth.get(0))%>&direction=2">Mua Vé</a></button>
+                    <c:if test="${sessionScope.account.role.name.equals('admin')}">
+                        <button><a style="text-decoration: none; color:#fff;" href="updateMovie?movieID=${movie.movieID}">Sửa Phim</a></button>
+                        <button><a style="text-decoration: none; color:#fff" href="addNewSlot?movieID=${movie.movieID}">Thêm Suất Chiếu</a></button>
+                    </c:if>
+
                 </div>
             </div>
             <div class="description" style="width: 900px; margin-top: 40px; font-size: 20px">

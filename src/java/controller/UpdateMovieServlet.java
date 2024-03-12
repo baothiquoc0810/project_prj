@@ -4,14 +4,17 @@
  */
 package controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Date;
+import java.util.List;
+import java.util.UUID;
 
+import dal.DAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,10 +22,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-import java.sql.Date;
-import java.util.UUID;
-
-import dal.DAO;
+import modal.MovieGenres;
 import modal.Movies;
 import modal.Users;
 
@@ -31,8 +31,8 @@ import modal.Users;
  * @author bquoc
  */
 @MultipartConfig
-@WebServlet(name = "UploadMovieServlet", urlPatterns = {"/uploadMovie"})
-public class UploadMovieServlet extends HttpServlet {
+@WebServlet(name = "UpdateMovieServlet", urlPatterns = {"/updateMovie"})
+public class UpdateMovieServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -51,10 +51,10 @@ public class UploadMovieServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UploadMovieServlet</title>");
+            out.println("<title>Servlet UpdateMovieServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UploadMovieServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UpdateMovieServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -73,11 +73,18 @@ public class UploadMovieServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Users user = (Users) request.getSession().getAttribute("account");
-        if (user == null || user.getRole().getName().equals("user")) {
+        String movieID = request.getParameter("movieID");
+        if (user == null || user.getRole().getName().equals("user") || movieID == null) {
             response.sendRedirect("signin");
             return;
         } else {
-            request.getRequestDispatcher("WEB-INF/view/addNewMovie.jsp").forward(request, response);
+            DAO dao = new DAO();
+            movieID = request.getParameter("movieID");
+            Movies movie = dao.getMovieByID(Integer.parseInt(movieID));
+
+            request.setAttribute("movie", movie);
+
+            request.getRequestDispatcher("WEB-INF/views/updateMovie.jsp").forward(request, response);
         }
     }
 
@@ -92,19 +99,19 @@ public class UploadMovieServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         DAO dao = new DAO();
         String title = request.getParameter("movieTitle");
         String description = request.getParameter("description");
         Date releaseDate = Date.valueOf(request.getParameter("releaseDate"));
         int duration = Integer.parseInt(request.getParameter("duration"));
         String genres = request.getParameter("selectedGenres");
-        
+        String oldPosterImage = request.getParameter("oldPosterImage");
+
         // Đường dẫn thực tế trên máy chủ để lưu trữ hình ảnh
         String realPath = "C:\\Users\\bquoc\\Documents\\NetBeansProjects\\Project\\web\\assets\\images\\posterImages";
-
         // Tạo đối tượng Path từ đường dẫn thực tế
         Path dirPath = Paths.get(realPath);
-
         try {
             //check if date is 30 days from now will return a error message
             Date currentDate = new Date(System.currentTimeMillis());
@@ -112,7 +119,7 @@ public class UploadMovieServlet extends HttpServlet {
             long diffDays = diff / (24 * 60 * 60 * 1000);
             if (diffDays > 30) {
                 request.setAttribute("message", "Release date must be at most 30 days before now");
-                request.getRequestDispatcher("WEB-INF/views/addNewMovie.jsp").forward(request, response);
+                request.getRequestDispatcher("WEB-INF/views/updateMovie.jsp").forward(request, response);
             } else {
                 // Kiểm tra nếu thư mục không tồn tại thì tạo mới
                 if (!Files.exists(dirPath)) {
@@ -132,20 +139,32 @@ public class UploadMovieServlet extends HttpServlet {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                dao.updateMovieByID(title, description, releaseDate, uniqueFileName, duration, Integer.parseInt(request.getParameter("movieID")));
 
-                dao.insertNewMovie(title, description, releaseDate, uniqueFileName, duration);
-                Movies movie = dao.getMovieRecentlyAdded();
+                Movies movie = dao.getMovieByID(Integer.parseInt(request.getParameter("movieID")));
+                List<MovieGenres> movieGenres = dao.getMovieGenresIDByMovieID(movie.getMovieID());
                 String[] genreList = genres.split(", ");
-                for (String genre : genreList) {
-                    dao.insertMovieGenre(Integer.parseInt(genre), movie.getMovieID());
+
+                for (int i = 0; i < movieGenres.size() - 1; i++) {
+                    MovieGenres movieGenre = movieGenres.get(i);
+                    int genreID = Integer.parseInt(genreList[i]);
+
+                    // Update the movieGenre with the genreID
+                    dao.updateMovieGenresByMovieGenresID(movieGenre.getMovieGenresID(), genreID);
+                }
+
+                // Delete the old image file
+                Path oldImagePath = Paths.get(realPath, oldPosterImage);
+                try {
+                    Files.deleteIfExists(oldImagePath);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 response.sendRedirect("home");
             }
-
         } catch (IOException | ServletException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
