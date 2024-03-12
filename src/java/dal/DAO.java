@@ -573,13 +573,60 @@ public class DAO extends DBContext {
         }
     }
 
+    //update movie by id
+    public void updateMovieByID(String title, String description, Date releaseDate, String posterImage, int duration, int movieID){
+        String sql = "update Movies set title = ?, description = ?, releaseDate = ?, posterImage = ?, duration = ? where movieID = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, title);
+            ps.setString(2, description);
+            ps.setDate(3, releaseDate);
+            ps.setString(4, posterImage);
+            ps.setInt(5, duration);
+            ps.setInt(6, movieID);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+    }
+
+    //get movieGenresID by movieID
+    public List<MovieGenres> getMovieGenresIDByMovieID(int movieID){
+        List<MovieGenres> list = new ArrayList<>();
+        String sql = "select * from MovieGenres where movieID = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, movieID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                MovieGenres mg = new MovieGenres(rs.getInt("movieGenresID"), getGenresByID(rs.getInt("genreID")), getMovieByID(rs.getInt("movieID")));
+                list.add(mg);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+
+    //update movie genres by movieGenresID
+    public void updateMovieGenresByMovieGenresID(int movieGenresID, int genreID){
+        String sql = "update MovieGenres set genreID = ? where movieGenresID = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, genreID);
+            ps.setInt(2, movieGenresID);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+   
+
     public static void main(String[] args) {
         DAO dao = new DAO();
-        //test get all tickets by userID
-        List<Tickets> list = dao.getAllTicketsByUserID(13);
-        for (Tickets tickets : list) {
-            System.out.println(tickets.getPrice());
-        }
+       //test update movieGenres by movieID
+        //dao.updateMovieGenresByID(9, 14);
 
     }
 }
