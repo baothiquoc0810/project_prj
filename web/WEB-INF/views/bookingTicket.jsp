@@ -94,6 +94,7 @@
                 <h2 id="calendarTitle">Lịch chiếu phim của các ngày tiếp theo</h2>
                 <div class="calendar" id="calendar">
                     <% for (int i = 0; i < 5; i++) { %>
+                        <input type="hidden" name="mainDate" value="<%= String.format("%tF", cal.getTime()) %>">
                     <a href="booking?movieid=${movieID}&date=<%= daysOfMonth.get(i) %>" class="day-link">
                         <div class="day <%= (Integer.parseInt(String.valueOf(request.getAttribute("date"))) == daysOfMonth.get(i) ? "active" : "") %>">
                             <div class="date"><%= daysOfMonth.get(i) %></div>

@@ -82,6 +82,11 @@
                                         THÊM PHIM MỚI
                                     </a>
                                 </li>
+                                <li style="background-color:${backgroundColorSecond}">
+                                    <a style="color: ${colorSecond}"  href="detailUsers">
+                                        QUẢN LÝ NGƯỜI DÙNG
+                                    </a>
+                                </li>
                             </c:if>
                         </ul>
 

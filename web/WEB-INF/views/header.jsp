@@ -67,21 +67,42 @@
                                     <a href="home" class="level1">Phim Đang Chiếu</a>
                                 </li>
                                 <li class="level1-nav1-2">
-                                    <a href="#" class="level1">Phim Sắp Chiếu</a>
+                                    <a href="commingSoon" class="level1">Phim Sắp Chiếu</a>
                                 </li>
                                 <li class="level1-nav1-2"></li>
                             </ul>
                         </li>
                         <li class="level0-nav-1-parent">
-                            <a class="level0-has-children" href="#">RẠP CGV</a>
+                            <a class="level0-has-children" href="#">THỂ LOẠI</a>
                             <ul class="level0">
                                 <li class="level1-nav1-1">
-                                    <a href="#" class="level1">TẤT CẢ CÁC RẠP</a>
+                                    <a href="genres?genreID=1" class="level1">Hành Động</a>
                                 </li>
                                 <li class="level1-nav1-2">
-                                    <a href="#" class="level1">RẠP 3D</a>
+                                    <a href="genres?genreID=2" class="level1">Phưu Lưu</a>
                                 </li>
-                                <li class="level1-nav1-2"></li>
+                                <li class="level1-nav1-2">
+                                    <a href="genres?genreID=3" class="level1">Tâm Lý</a>
+                                </li>
+                                <li class="level1-nav1-2">
+                                    <a href="genres?genreID=4" class="level1">Tình Cảm</a>
+                                </li>
+                                <li class="level1-nav1-2">
+                                    <a href="genres?genreID=5" class="level1">Kinh Dị</a>
+                                </li>
+                                <li class="level1-nav1-2">
+                                    <a href="genres?genreID=6" class="level1">Gia Đình</a>
+                                </li>
+                                <li class="level1-nav1-2">
+                                    <a href="genres?genreID=7" class="level1">Hài</a>
+                                </li>
+                                <li class="level1-nav1-2">
+                                    <a href="genres?genreID=8" class="level1">Hoạt Hình</a>
+                                </li>
+                                <li class="level1-nav1-2">
+                                    <a href="genres?genreID=9" class="level1">Hồi Hộp</a>
+                                </li>
+                                
                             </ul>
                         </li>
                         <li class="level0-nav-1-parent">

@@ -27,7 +27,7 @@
         <form action="register" onsubmit="return validateForm()" method="post">
             <div class="mask d-flex align-items-center h-100 gradient-custom-3">
                 <div class="container h-100">
-                    <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div style="width: 100%;" class="row d-flex justify-content-center align-items-center h-100">
                         <div class="col-12 col-md-9 col-lg-7 col-xl-6" style="margin: 40px 0 40px 0">
                             <div class="card" style="border-radius: 15px;">
                                 <div class="card-body p-5">
@@ -53,7 +53,7 @@
                                         <div class="d-flex justify-content-center">
                                             <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Register</button>
                                         </div>
-                                        <p class="text-center text-muted mt-5 mb-0">Have already an account? <a href="signIn.jsp" class="fw-bold text-body"><u>Login here</u></a></p>
+                                        <p class="text-center text-muted mt-5 mb-0">Have already an account? <a href="signin" class="fw-bold text-body"><u>Login here</u></a></p>
                                     </form>
 
                                 </div>
