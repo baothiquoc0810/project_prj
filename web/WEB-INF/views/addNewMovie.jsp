@@ -133,6 +133,11 @@
                                 <a style="color: ${colorMain}"  href="addNewMovie">
                                     THÊM PHIM MỚI
                                 </a>
+                                <li style="background-color:${backgroundColorSecond}">
+                                    <a style="color: ${colorSecond}"  href="detailUsers">
+                                        QUẢN LÝ NGƯỜI DÙNG
+                                    </a>
+                                </li>
                             </li>
                         </c:if>
                     </ul>

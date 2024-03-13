@@ -7,7 +7,9 @@ package controller;
 import dal.DAO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -85,6 +87,16 @@ public class BookingTicketServlet extends HttpServlet {
                 String movieID = request.getParameter("movieid");
                 String date = request.getParameter("date");
                 String direction = request.getParameter("direction");
+                //get current hour and minute
+                Timestamp startTime = new Timestamp(System.currentTimeMillis());
+
+                // Get the current year and month
+                LocalDate now = LocalDate.now();
+                int year = now.getYear();
+                int month = now.getMonthValue();
+
+                // Combine the current year and month with the given date
+                String mainDate = year + "-" + String.format("%02d", month) + "-" + String.format("%02d", Integer.parseInt(date));
 
                 if (movieID == null && date == null && direction == null) {
                     response.sendRedirect("home");
@@ -98,7 +110,7 @@ public class BookingTicketServlet extends HttpServlet {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 java.sql.Date dateSql = null;
                 try {
-                    java.util.Date utilDate = sdf.parse("2024-03-04");
+                    java.util.Date utilDate = sdf.parse(mainDate);
                     dateSql = new java.sql.Date(utilDate.getTime());
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -117,7 +129,12 @@ public class BookingTicketServlet extends HttpServlet {
                     // For each cinema, get the cinemaID and use it to get the list of ScreeningTimes
                     for (Cinemas cinema : listCinemas) {
                         int cinemaID = cinema.getCinemaID();
-                        List<ScreeningTimes> listScreeningTimes = d.getAllFlimList(Integer.parseInt(movieID), cinemaID, dateSql);
+                        List<ScreeningTimes> listScreeningTimes = d.getAllFlimList(Integer.parseInt(movieID), cinemaID, dateSql, startTime);
+                        if (listScreeningTimes == null) {
+                            request.setAttribute("isEmpty", true);
+                        } else {
+                            request.setAttribute("isEmpty", false);
+                        }
 
                         // Sort the listScreeningTimes in ascending order based on the start time
                         Collections.sort(listScreeningTimes, new Comparator<ScreeningTimes>() {

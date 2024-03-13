@@ -9,6 +9,7 @@ import modal.Users;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import modal.Cinemas;
@@ -25,6 +26,7 @@ import java.text.SimpleDateFormat;
 import modal.SeatWithScreeningTime;
 import modal.Seats;
 import modal.Tickets;
+import modal.TotalTicketOfUser;
 
 public class DAO extends DBContext {
 
@@ -186,7 +188,25 @@ public class DAO extends DBContext {
     //void get all movies
     public List<Movies> getMovies() {
         List<Movies> list = new ArrayList<>();
-        String sql = "select * from Movies";
+        String sql = "SELECT * FROM Movies m WHERE m.releaseDate < CAST(GETDATE() AS DATE)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Movies m = new Movies(rs.getInt("movieID"), rs.getString("title"), rs.getString("description"), rs.getDate("releaseDate"), rs.getString("posterImage"), rs.getInt("duration"));
+                list.add(m);
+            }
+            return list;
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
+    //void get all movie after now
+    public List<Movies> getAllMovieAfterNow() {
+        String sql = "SELECT * FROM Movies m WHERE m.releaseDate > CAST(GETDATE() AS DATE)";
+        List<Movies> list = new ArrayList<>();
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -216,6 +236,24 @@ public class DAO extends DBContext {
             System.out.println(e);
         }
         return null;
+    }
+
+    //void get movie by genreID
+    public List<Movies> getMovieByGenreID(String genreID){
+        List<Movies> list = new ArrayList<>();
+        String sql = "select * from Movies m join MovieGenres mg on m.movieID = mg.movieID join Genres g on mg.genreID = g.genreID where mg.genreID = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, genreID);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                Movies m = new Movies(rs.getInt("movieID"), rs.getString("title"), rs.getString("description"), rs.getDate("releaseDate"), rs.getString("posterImage"), rs.getInt("duration"));
+                list.add(m);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
     }
 
     //void get Genres by genresID
@@ -259,14 +297,15 @@ public class DAO extends DBContext {
     }
 
     //get list screening time
-    public List<ScreeningTimes> getAllFlimList(int movieID, int cinemaID, Date movieDate) {
+    public List<ScreeningTimes> getAllFlimList(int movieID, int cinemaID, Date movieDate, Timestamp startTime) {
         List<ScreeningTimes> list = new ArrayList<>();
-        String sql = "select l.locationID, l.name as location, c.cinemaID, c.name as cinemasName, c.movieDate, t.theaterID, t.theaterNumber, st.screeningID, st.startTime, st.endTime, m.movieID,m.title, m.description, m.releaseDate, m.posterImage, m.duration from [Location] l join Cinemas c on l.locationID = c.locationID join Theaters t on c.cinemaID = t.cinemaID join ScreeningTimes st on t.theaterID = st.theaterID join Movies m on st.movieID = m.movieID where m.movieID = ? and c.cinemaID = ? and c.movieDate = ?";
+        String sql = "select l.locationID, l.name as location, c.cinemaID, c.name as cinemasName, c.movieDate, t.theaterID, t.theaterNumber, st.screeningID, st.startTime, st.endTime, m.movieID,m.title, m.description, m.releaseDate, m.posterImage, m.duration from [Location] l join Cinemas c on l.locationID = c.locationID join Theaters t on c.cinemaID = t.cinemaID join ScreeningTimes st on t.theaterID = st.theaterID join Movies m on st.movieID = m.movieID where m.movieID = ? and c.cinemaID = ? and c.movieDate = ? and st.startTime > DATEADD(hour, 1, ?)";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, movieID);
             ps.setInt(2, cinemaID);
             ps.setDate(3, movieDate);
+            ps.setTimestamp(4, startTime);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Location l = new Location(rs.getInt("locationID"), rs.getString("location"));
@@ -489,19 +528,31 @@ public class DAO extends DBContext {
     //pagination list tickets by userID
     public List<Tickets> paginationTickets(int userID, int index) {
         List<Tickets> list = new ArrayList<>();
-        String sql = "select t.ticketID, u.userID, m.movieID, c.cinemaID, t.price, t.purchaseDate, s.seatID, o.orderID,u.displayName, u.username, u.password, r.roleID, r.name as roleName, m.title, m.description, m.releaseDate, m.posterImage, m.duration, m.duration, c.name as cinemasName, c.movieDate, l.locationID, l.name as locationName, st.screeningID, s.seatNumber, th.theaterID, st.startTime, st.endTime, th.theaterNumber, o.quantity, o.allPrice from Tickets t \r\n" + //
-                        "join Users u on t.userID = u.userID\r\n" + //
-                        "join Roles r on r.roleID = u.roleID\r\n" + //
-                        "join Movies m on m.movieID = t.movieID\r\n" + //
-                        "join Cinemas c on c.cinemaID = t.cinemaID\r\n" + //
-                        "join Location l on c.locationID = l.locationID\r\n" + //
-                        "join Seats s on s.seatID = t.seatID\r\n" + //
-                        "join ScreeningTimes st on s.screeningID = st.screeningID\r\n" + //
-                        "join Theaters th on th.theaterID = st.theaterID\r\n" + //
-                        "join Orders o on o.orderID = t.orderID\r\n" + //
-                        "where u.userID = ?\r\n" + //
-                        "order by t.ticketID\r\n" + //
-                        "offset ? rows fetch next 5 rows only";
+        String sql = "select t.ticketID, u.userID, m.movieID, c.cinemaID, t.price, t.purchaseDate, s.seatID, o.orderID,u.displayName, u.username, u.password, r.roleID, r.name as roleName, m.title, m.description, m.releaseDate, m.posterImage, m.duration, m.duration, c.name as cinemasName, c.movieDate, l.locationID, l.name as locationName, st.screeningID, s.seatNumber, th.theaterID, st.startTime, st.endTime, th.theaterNumber, o.quantity, o.allPrice from Tickets t \r\n"
+                + //
+                "join Users u on t.userID = u.userID\r\n"
+                + //
+                "join Roles r on r.roleID = u.roleID\r\n"
+                + //
+                "join Movies m on m.movieID = t.movieID\r\n"
+                + //
+                "join Cinemas c on c.cinemaID = t.cinemaID\r\n"
+                + //
+                "join Location l on c.locationID = l.locationID\r\n"
+                + //
+                "join Seats s on s.seatID = t.seatID\r\n"
+                + //
+                "join ScreeningTimes st on s.screeningID = st.screeningID\r\n"
+                + //
+                "join Theaters th on th.theaterID = st.theaterID\r\n"
+                + //
+                "join Orders o on o.orderID = t.orderID\r\n"
+                + //
+                "where u.userID = ?\r\n"
+                + //
+                "order by t.ticketID\r\n"
+                + //
+                "offset ? rows fetch next 5 rows only";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, userID);
@@ -527,9 +578,10 @@ public class DAO extends DBContext {
     }
 
     //insert new movie
-    public void insertNewMovie(String title, String description, Date releaseDate, String posterImage, int duration){
-        String sql = "insert into Movies (title, description, releaseDate, posterImage, duration)\r\n" + //
-                     "values(?, ?, ?, ?, ?)";
+    public void insertNewMovie(String title, String description, Date releaseDate, String posterImage, int duration) {
+        String sql = "insert into Movies (title, description, releaseDate, posterImage, duration)\r\n"
+                + //
+                "values(?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, title);
@@ -544,7 +596,7 @@ public class DAO extends DBContext {
     }
 
     //select the movie recently added
-    public Movies getMovieRecentlyAdded(){
+    public Movies getMovieRecentlyAdded() {
         String sql = "select top 1 * from Movies order by movieID desc";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -560,9 +612,10 @@ public class DAO extends DBContext {
     }
 
     //insert movie genre
-    public void insertMovieGenre(int genreID, int movieID){
-        String sql = "insert into MovieGenres (genreID, movieID)\r\n" + //
-                     "values(?, ?)";
+    public void insertMovieGenre(int genreID, int movieID) {
+        String sql = "insert into MovieGenres (genreID, movieID)\r\n"
+                + //
+                "values(?, ?)";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, genreID);
@@ -574,7 +627,7 @@ public class DAO extends DBContext {
     }
 
     //update movie by id
-    public void updateMovieByID(String title, String description, Date releaseDate, String posterImage, int duration, int movieID){
+    public void updateMovieByID(String title, String description, Date releaseDate, String posterImage, int duration, int movieID) {
         String sql = "update Movies set title = ?, description = ?, releaseDate = ?, posterImage = ?, duration = ? where movieID = ?";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -592,7 +645,7 @@ public class DAO extends DBContext {
     }
 
     //get movieGenresID by movieID
-    public List<MovieGenres> getMovieGenresIDByMovieID(int movieID){
+    public List<MovieGenres> getMovieGenresIDByMovieID(int movieID) {
         List<MovieGenres> list = new ArrayList<>();
         String sql = "select * from MovieGenres where movieID = ?";
         try {
@@ -610,7 +663,7 @@ public class DAO extends DBContext {
     }
 
     //update movie genres by movieGenresID
-    public void updateMovieGenresByMovieGenresID(int movieGenresID, int genreID){
+    public void updateMovieGenresByMovieGenresID(int movieGenresID, int genreID) {
         String sql = "update MovieGenres set genreID = ? where movieGenresID = ?";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -621,12 +674,133 @@ public class DAO extends DBContext {
             System.out.println(e);
         }
     }
-   
+
+    //insert new cinemas
+    public void insertNewCinemas(String name, Date movieDate, int locationID) {
+        String sql = "insert into Cinemas (name, movieDate, locationID)\r\n"
+                + //
+                "values(?, ?, ?)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, name);
+            ps.setDate(2, movieDate);
+            ps.setInt(3, locationID);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
+    //get cinemasID recently added
+    public int getCinemasRecentlyAdded() {
+        String sql = "select top 1 * from Cinemas order by cinemaID desc";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("cinemaID");
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return 0;
+    }
+
+    //insert into theaters with cinemaID, theaterNumber
+    public void insertTheaters(int cinemaID, int theaterNumber) {
+        String sql = "insert into Theaters (cinemaID, theaterNumber)\r\n"
+                + //
+                "values(?, ?)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, cinemaID);
+            ps.setInt(2, theaterNumber);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
+    //get theatersID recently added
+    public int getTheaterIDRecentlyAdded() {
+        String sql = "select top 1 * from Theaters order by theaterID desc";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("theaterID");
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return 0;
+    }
+
+    //insert into screeningTimes with movieID, theaterID, startTime, endTime
+    public void insertScreeningTimes(int theaterID, int movieID, Timestamp startTime, Timestamp endTime) {
+        String sql = "insert into ScreeningTimes (theaterID, movieID, startTime, endTime)\r\n"
+                + //
+                "values(?, ?, ?, ?)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, theaterID);
+            ps.setInt(2, movieID);
+            ps.setTimestamp(3, startTime);
+            ps.setTimestamp(4, endTime);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
+    //get the latest end time of each theater number
+    public Timestamp getLastestEndTimeOfTheater(String cinemasName, Date movieDate, int theaterNumber) {
+        String sql = "select top 1 st.endTime from Location l join Cinemas c on l.locationID = c.locationID join Theaters t on t.cinemaID = c.cinemaID join ScreeningTimes st on st.theaterID = t.theaterID where c.name = ? and c.movieDate = ? and t.theaterNumber = ? order by endTime desc";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, cinemasName);
+            ps.setDate(2, movieDate);
+            ps.setInt(3, theaterNumber);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getTimestamp("endTime");
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
+    //get all tickets of all users
+    public List<TotalTicketOfUser> getAllTicketsOfAllUsers(){
+        String sql = "select u.userID,u.username,r.name, sum(o.quantity) as 'totalTickets' from Users u left join Orders o on u.userID = o.userID join Roles r on u.roleID = r.roleID GROUP BY u.userID, u.username, r.name";
+        List<TotalTicketOfUser> list = new ArrayList<>();
+        try{
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                TotalTicketOfUser t = new TotalTicketOfUser(rs.getInt("userID"), rs.getString("username"), rs.getString("name"), rs.getInt("totalTickets"));
+                list.add(t);
+            }
+        }catch(SQLException e){
+            System.out.println(e);
+        }
+        return list;
+    }
 
     public static void main(String[] args) {
         DAO dao = new DAO();
-       //test update movieGenres by movieID
-        //dao.updateMovieGenresByID(9, 14);
-
+        //get all ticket of all users
+        List<TotalTicketOfUser> list = dao.getAllTicketsOfAllUsers();
+        for(TotalTicketOfUser t : list){
+            if(t.getTotalTickets() == 0){
+                System.out.println("0");
+            }else{
+                System.out.println("not 0");
+            }
+            
+            
+        }
+        
     }
 }

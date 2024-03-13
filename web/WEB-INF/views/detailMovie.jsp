@@ -78,7 +78,7 @@
                         <div class="product-detail"> Khởi Chiếu: <span class="detail-movie">${movie.getReleaseDate()}</span></div>
                         <div class="product-detail">Thời Lượng: <span class="detail-movie">${movie.duration} Phút</span></div>
                     </div>
-                    <button><a style="text-decoration: none; color:#fff" href="booking?movieid=${movie.movieID}&date=<%=(daysOfMonth.get(0))%>&direction=2">Mua Vé</a></button>
+                    <button style="${isCommingSoon ? 'display: none;' : ''}"><a style="text-decoration: none; color:#fff" href="booking?movieid=${movie.movieID}&date=<%=(daysOfMonth.get(0))%>&direction=2">Mua Vé</a></button>                  
                     <c:if test="${sessionScope.account.role.name.equals('admin')}">
                         <button><a style="text-decoration: none; color:#fff;" href="updateMovie?movieID=${movie.movieID}">Sửa Phim</a></button>
                         <button><a style="text-decoration: none; color:#fff" href="addNewSlot?movieID=${movie.movieID}">Thêm Suất Chiếu</a></button>
