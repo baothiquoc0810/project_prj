@@ -45,7 +45,6 @@
     </style>
     <body>
         <%@include file="header.jsp" %>
-        <form action="update" method="post">
             <div class="container">
                 <div class="my-account">
                     <div class="left-content">
@@ -79,6 +78,19 @@
                                             QUẢN LÝ NGƯỜI DÙNG
                                         </a>
                                     </li>
+                                    <form action="detailUsers" style="width: 100%; padding: 10px; margin-top: 10px; margin-bottom: 10px">
+                                        <select name="sortID" onchange="this.form.submit()">
+                                            <option ${sort eq '' ? 'selected': ''} value="">Lựa chọn</option>
+                                            <option ${sort eq 'ORDER BY u.userID ASC' ? 'selected' : ''} value="ORDER BY u.userID ASC">UserID tăng dần</option>
+                                            <option ${sort eq 'ORDER BY u.userID DESC' ? 'selected' : ''} value="ORDER BY u.userID DESC">UserID giảm dần</option>
+                                            <option ${sort eq 'ORDER BY u.username ASC' ? 'selected' : ''} value="ORDER BY u.username ASC">Tên người dùng A-Z</option>
+                                            <option ${sort eq 'ORDER BY u.username DESC' ? 'selected' : ''} value="ORDER BY u.username DESC">Tên người dùng Z-A</option>
+                                            <option ${sort eq 'ORDER BY totalTickets desc' ? 'selected' : ''} value="ORDER BY totalTickets desc">Người mua vé nhiều-ít</option>
+                                            <option ${sort eq '"ORDER BY totalTickets' ? 'selected' : ''} value="ORDER BY totalTickets">Người mua vé ít-nhiều</option>
+
+                                        </select>
+                                    </form>
+                                    
                                 </c:if>
                             </ul>
 
@@ -88,7 +100,8 @@
                         <div class="page-title">
                             <h1>QUẢN LÝ NGƯỜI DÙNG</h1>
                         </div>
-                        <h6 id="error" style="color: red">${requestScope.error}</h6>
+                        <h6 id="error" style="color: red">${error}</h6>
+                    
                         <table border="1">
                             <thead>
                                 <tr>
@@ -117,8 +130,6 @@
                     </div>
                 </div>
             </div>
-
-        </form>
         <%@include file="footer.jsp" %>
 
     </body>

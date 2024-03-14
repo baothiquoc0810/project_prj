@@ -772,8 +772,8 @@ public class DAO extends DBContext {
     }
 
     //get all tickets of all users
-    public List<TotalTicketOfUser> getAllTicketsOfAllUsers(){
-        String sql = "select u.userID,u.username,r.name, sum(o.quantity) as 'totalTickets' from Users u left join Orders o on u.userID = o.userID join Roles r on u.roleID = r.roleID GROUP BY u.userID, u.username, r.name";
+    public List<TotalTicketOfUser> getAllTicketsOfAllUsers(String sort) {
+        String sql = "select u.userID,u.username,r.name, sum(o.quantity) as 'totalTickets' from Users u left join Orders o on u.userID = o.userID join Roles r on u.roleID = r.roleID GROUP BY u.userID, u.username, r.name " + sort ;
         List<TotalTicketOfUser> list = new ArrayList<>();
         try{
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -791,15 +791,9 @@ public class DAO extends DBContext {
     public static void main(String[] args) {
         DAO dao = new DAO();
         //get all ticket of all users
-        List<TotalTicketOfUser> list = dao.getAllTicketsOfAllUsers();
+        List<TotalTicketOfUser> list = dao.getAllTicketsOfAllUsers("");
         for(TotalTicketOfUser t : list){
-            if(t.getTotalTickets() == 0){
-                System.out.println("0");
-            }else{
-                System.out.println("not 0");
-            }
-            
-            
+            System.out.println(t.getTotalTickets());
         }
         
     }
