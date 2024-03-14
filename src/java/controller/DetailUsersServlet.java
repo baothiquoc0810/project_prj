@@ -13,6 +13,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.ArrayList;
 import java.util.List;
 import modal.TotalTicketOfUser;
 import modal.Users;
@@ -70,7 +72,15 @@ public class DetailUsersServlet extends HttpServlet {
             request.setAttribute("backgroundColorSecond", "#bfd2d9");
 
             DAO dao = new DAO();
-            List<TotalTicketOfUser> listTotalTicketOfUser = dao.getAllTicketsOfAllUsers();
+            String sortID =  request.getParameter("sortID");
+            List<TotalTicketOfUser> listTotalTicketOfUser = new ArrayList<>();
+            if(sortID == null || sortID.equals("")){
+                listTotalTicketOfUser = dao.getAllTicketsOfAllUsers("");
+            }else{
+             listTotalTicketOfUser = dao.getAllTicketsOfAllUsers(sortID);
+                
+        }
+            request.setAttribute("sort", sortID);
             request.setAttribute("listTotalTicketOfUser", listTotalTicketOfUser);
 
         request.getRequestDispatcher("/WEB-INF/views/detailUsers.jsp").forward(request, response);
@@ -87,7 +97,8 @@ public class DetailUsersServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        String sort = request.getParameter("sort");
+            response.getWriter().print(sort);
     }
 
     /** 

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -60,6 +61,20 @@ public class SignInServlet extends HttpServlet {
     throws ServletException, IOException {
         // processRequest(request, response);
         // response.getWriter().println("Hello from SignInServlet");
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("cuser")) {
+                    request.setAttribute("username", cookie.getValue());
+                }
+                if (cookie.getName().equals("cpass")) {
+                    request.setAttribute("password", cookie.getValue());
+                }
+                if (cookie.getName().equals("crem")) {
+                    request.setAttribute("rememberMe", cookie.getValue());
+                }
+            }
+        }
         request.getRequestDispatcher("/WEB-INF/views/sign-in.jsp").forward(request, response);
     } 
 
@@ -75,6 +90,8 @@ public class SignInServlet extends HttpServlet {
     throws ServletException, IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
+        String remember = request.getParameter("rememberMe");
+
         
         DAO d = new DAO();
         Users u = d.checkLogin(username, password);
@@ -84,6 +101,24 @@ public class SignInServlet extends HttpServlet {
         }else{
             HttpSession session = request.getSession();
             session.setAttribute("account", u);
+
+            //create three cookie
+            Cookie cu = new Cookie("cuser", username);
+            Cookie cp = new Cookie("cpass", password);
+            Cookie cr = new Cookie("crem", remember);
+            if(remember != null){
+                cu.setMaxAge(60*60*24);
+                cp.setMaxAge(60*60*24);
+                cr.setMaxAge(60*60*24);
+            }else{
+                cu.setMaxAge(0);
+                cp.setMaxAge(0);
+                cr.setMaxAge(0);
+            }
+            response.addCookie(cu);
+            response.addCookie(cp);
+            response.addCookie(cr);
+            
             response.sendRedirect("home");
         }
     }

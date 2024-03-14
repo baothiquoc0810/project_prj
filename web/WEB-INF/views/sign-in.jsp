@@ -74,13 +74,13 @@
                                         <!-- Email input -->
                                         <div class="form-outline mb-4">
                                             <label class="form-label" for="form3Example3">User Name</label>
-                                            <input type="text" required name="username" id="form3Example3" class="form-control" />
+                                            <input type="text" required name="username" value="${username}" id="form3Example3" class="form-control" />
                                         </div>
 
                                         <!-- Password input -->
                                         <div class="form-outline mb-4">
                                             <label class="form-label" for="form3Example4">Password</label>
-                                            <input type="password" required name="password" id="form3Example4" class="form-control" />
+                                            <input type="password" required value="${password}" name="password" id="form3Example4" class="form-control" />
                                         </div>
 
 
@@ -90,12 +90,14 @@
                                                 Sign up
                                             </button>
                                             <div class="row mb-4">
-                                                <div class="col-md-6 d-flex justify-content-center">
+                                                <div style="height:20px" class="col-md-6 d-flex justify-content-center">
                                                     <!-- Simple link -->
-                                                    <a href="#!">Forgot password?</a>
+                                                    <input checked style="margin-right: 5px;" type="checkbox" id="rememberMe" name="rememberMe">
+                                                    <p>Rememmber me!</p>
                                                 </div>
                                                 <div class="text-center">
                                                     <p>Not a member? <a href="register">Register</a></p>
+                                                    <p>${null}</p>
                                                 </div>
                                             </div>
                                         </div>
