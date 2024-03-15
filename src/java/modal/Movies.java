@@ -15,17 +15,19 @@ public class Movies {
     private Date releaseDate;
     private String posterImage;
     private int duration;
+    private int display;
 
     public Movies() {
     }
 
-    public Movies(int movieID, String title, String description, Date releaseDate, String posterImage, int duration) {
+    public Movies(int movieID, String title, String description, Date releaseDate, String posterImage, int duration, int display) {
         this.movieID = movieID;
         this.title = title;
         this.description = description;
         this.releaseDate = releaseDate;
         this.posterImage = posterImage;
         this.duration = duration;
+        this.display = display;
     }
 
     public int getMovieID() {
@@ -74,6 +76,14 @@ public class Movies {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public int getDisplay() {
+        return display;
+    }
+
+    public void setDisplay(int display) {
+        this.display = display;
     }
     
     

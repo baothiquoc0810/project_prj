@@ -11,7 +11,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
     </head>
-     <style>
+    <script src="https://cdn.ckeditor.com/ckeditor5/33.0.0/classic/ckeditor.js"></script>
+    <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f2f2f2;
@@ -105,55 +106,60 @@
 
     </style>
     <body>
-            <%@include file="header.jsp" %>
+        <%@include file="header.jsp" %>
 
-       <div class="add-new-movie" style="width:870px">
-                <h2>Add New Movie</h2>
-                <form style="width:100%" action="updateMovie" method="post" enctype="multipart/form-data">
-                    <h3 style="color:red">${message}</h3>
-                    <div class="form-group">
-                        <label for="movieTitle">Title:</label>
-                        <input type="text" id="movieTitle" name="movieTitle" required value="${movie.title}" />
+        <div class="add-new-movie" style="width:870px">
+            <h2>Add New Movie</h2>
+            <form style="width:100%" action="updateMovie" method="post" enctype="multipart/form-data">
+                <h3 style="color:red">${message}</h3>
+                <div class="form-group">
+                    <label for="movieTitle">Title:</label>
+                    <input type="text" id="movieTitle" name="movieTitle" required value="${movie.title}" />
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" required>${movie.getDescription()}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="releaseDate">Release Date:</label>
+                    <input type="date" id="releaseDate" name="releaseDate" required value="${movie.releaseDate}"/>
+                </div>
+                <div class="form-group">
+                    <label style="display:block;" for="posterImage">Poster Image:</label>
+                    <input style="background-color: #d1cab8" type="file" id="posterImage" name="posterImage" accept="image/*" required/>
+                    <input type="hidden" name="oldPosterImage" value="${movie.posterImage}"/>
+                </div>
+                <div class="form-group">
+                    <label for="duration">Duration (minutes):</label>
+                    <input type="number" id="duration" name="duration" required value="${movie.duration}">
+                </div>
+                <div class="form-group">
+                    <label>Genre:</label><br>
+                    <div class="genre-buttons">
+                        <button type="button" value="1" class="genre-button">Hành Động</button>
+                        <button type="button" value="2" class="genre-button">Phưu Lưu</button>
+                        <button type="button" value="3" class="genre-button">Tâm Lý</button>
+                        <button type="button" value="4" class="genre-button">Tình Cảm</button>
+                        <button type="button" value="5" class="genre-button">Kinh Dị</button>
+                        <button type="button" value="6" class="genre-button">Gia Đình</button>
+                        <button type="button" value="7" class="genre-button">Hài</button>
+                        <button type="button" value="8" class="genre-button">Hoạt Hình</button>
+                        <button type="button" value="9" class="genre-button">Hồi Hộp</button>
                     </div>
-                    <div class="form-group">
-                        <label for="description">Description:</label>
-                        <textarea id="description" name="description" required>${movie.getDescription()}</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="releaseDate">Release Date:</label>
-                        <input type="date" id="releaseDate" name="releaseDate" required value="${movie.releaseDate}"/>
-                    </div>
-                    <div class="form-group">
-                        <label style="display:block;" for="posterImage">Poster Image:</label>
-                        <input style="background-color: #d1cab8" type="file" id="posterImage" name="posterImage" accept="image/*" required/>
-                        <input type="hidden" name="oldPosterImage" value="${movie.posterImage}"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="duration">Duration (minutes):</label>
-                        <input type="number" id="duration" name="duration" required value="${movie.duration}">
-                    </div>
-                    <div class="form-group">
-                        <label>Genre:</label><br>
-                        <div class="genre-buttons">
-                            <button type="button" value="1" class="genre-button">Hành Động</button>
-                            <button type="button" value="2" class="genre-button">Phưu Lưu</button>
-                            <button type="button" value="3" class="genre-button">Tâm Lý</button>
-                            <button type="button" value="4" class="genre-button">Tình Cảm</button>
-                            <button type="button" value="5" class="genre-button">Kinh Dị</button>
-                            <button type="button" value="6" class="genre-button">Gia Đình</button>
-                            <button type="button" value="7" class="genre-button">Hài</button>
-                            <button type="button" value="8" class="genre-button">Hoạt Hình</button>
-                            <button type="button" value="9" class="genre-button">Hồi Hộp</button>
-                        </div>
-                    </div>
-                    <input type="hidden" id="selectedGenres" name="selectedGenres" />
-                    <input type="hidden" name="movieID" value="${movie.movieID}" />
-                    <input type="submit" value="Submit" />
-                </form>
-            </div>
-    <%@include file="footer.jsp" %>
+                </div>
+                <input type="hidden" id="selectedGenres" name="selectedGenres" />
+                <input type="hidden" name="movieID" value="${movie.movieID}" />
+                <input type="submit" value="Submit" />
+            </form>
+        </div>
+        <%@include file="footer.jsp" %>
     </body>
     <script>
+        ClassicEditor
+        .create(document.querySelector('#description'))
+        .catch(error => {
+            console.error(error);
+        });
         document.addEventListener('DOMContentLoaded', function () {
             var buttons = document.querySelectorAll('.genre-button');
             var selectedGenresInput = document.getElementById('selectedGenres');

@@ -94,7 +94,7 @@
                 <h2 id="calendarTitle">Lịch chiếu phim của các ngày tiếp theo</h2>
                 <div class="calendar" id="calendar">
                     <% for (int i = 0; i < 5; i++) { %>
-                        <input type="hidden" name="mainDate" value="<%= String.format("%tF", cal.getTime()) %>">
+                    <input type="hidden" name="mainDate" value="<%= String.format("%tF", cal.getTime()) %>">
                     <a href="booking?movieid=${movieID}&date=<%= daysOfMonth.get(i) %>" class="day-link">
                         <div class="day <%= (Integer.parseInt(String.valueOf(request.getAttribute("date"))) == daysOfMonth.get(i) ? "active" : "") %>">
                             <div class="date"><%= daysOfMonth.get(i) %></div>
@@ -130,24 +130,31 @@
                 </ul>
             </div>
             <div class="tabcontent showtimes">
-                <% if ((Boolean) request.getAttribute("isEmpty")) { %>
-                <h1 style="color:red">Rất tiếc không có suất chiếu nào!</h1>
-                <% } else { %>
-                <c:forEach items="${listCinemas}" var="nameLocation">
-                    <div class="site">
-                        <div class="title">
-                            <h3>${nameLocation.getName()}</h3>
-                        </div>
-                        <ul class="products-grid-movie">
-                            <c:forEach items="${cinemaScreeningTimes[nameLocation.getCinemaID()]}" var="screeningTime">
-                                <li class="item">
-                                    <a href="seatNumber?screeningID=${screeningTime.getScreeningID()}"><span><fmt:formatDate value="${screeningTime.getStartTime()}" pattern="HH:mm" /></span></a>
-                                </li>
-                            </c:forEach>
-                        </ul>
-                    </div>
-                </c:forEach>
-                <% } %>
+                <c:choose>
+                    <c:when test="${empty cinemaScreeningTimes}">
+                        <h1 style="color:red">Rất tiếc không có suất chiếu nào!</h1>
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach items="${cinemaScreeningTimes}" var="cinemaEntry">
+                            <div class="site">
+                                <div class="title">
+                                    <h3>${cinemaEntry.key}</h3>
+                                </div>
+                                <ul class="products-grid-movie">
+                                    <c:forEach items="${cinemaEntry.value}" var="screeningTimesList">
+                                        <c:forEach items="${screeningTimesList}" var="screeningTime">
+                                            <li class="item">
+                                                <a href="seatNumber?screeningID=${screeningTime.getScreeningID()}">
+                                                    <span><fmt:formatDate value="${screeningTime.getStartTime()}" pattern="HH:mm" /></span>
+                                                </a>
+                                            </li>
+                                        </c:forEach>
+                                    </c:forEach>
+                                </ul>
+                            </div>
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
             </div>
 
 

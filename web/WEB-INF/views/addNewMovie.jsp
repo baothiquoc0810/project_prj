@@ -11,6 +11,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
     </head>
+    <script src="https://cdn.ckeditor.com/ckeditor5/33.0.0/classic/ckeditor.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -133,11 +134,11 @@
                                 <a style="color: ${colorMain}"  href="addNewMovie">
                                     THÊM PHIM MỚI
                                 </a>
-                                <li style="background-color:${backgroundColorSecond}">
-                                    <a style="color: ${colorSecond}"  href="detailUsers">
-                                        QUẢN LÝ NGƯỜI DÙNG
-                                    </a>
-                                </li>
+                            <li style="background-color:${backgroundColorSecond}; font-size:20px">
+                                <a style="color: ${colorSecond}"  href="detailUsers">
+                                    QUẢN LÝ NGƯỜI DÙNG
+                                </a>
+                            </li>
                             </li>
                         </c:if>
                     </ul>
@@ -154,8 +155,10 @@
                     </div>
                     <div class="form-group">
                         <label for="description">Description:</label>
-                        <textarea id="description" name="description" required></textarea>
+                        <div id="editor"></div>
+                        <textarea id="description" name="description" style="display: none;"></textarea>
                     </div>
+
                     <div class="form-group">
                         <label for="releaseDate">Release Date:</label>
                         <input type="date" id="releaseDate" name="releaseDate" required />
@@ -191,6 +194,18 @@
     </body>
     <%@include file="footer.jsp" %>
     <script>
+        ClassicEditor
+                .create(document.querySelector('#editor'))
+                .then(editor => {
+                    editor.setData('${movie.getDescription()}');
+                    editor.model.document.on('change:data', () => {
+                        const data = editor.getData();
+                        document.querySelector('#description').value = data;
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         document.addEventListener('DOMContentLoaded', function () {
             var buttons = document.querySelectorAll('.genre-button');
             var selectedGenresInput = document.getElementById('selectedGenres');

@@ -56,7 +56,7 @@
         <%@include file="header.jsp" %>
         <div class="container">
             <div class="my-account">
-                <div class="left-content" style="min-width:20%">
+                <div class="left-content" style="min-width:28%">
                     <h1 class="block-title" style="color:red">TÀI KHOẢN</h1>
                     <div class="block-cotent">
                         <ul style="padding:0">

@@ -72,30 +72,58 @@
                         <ul class="curr-list">
                             <% int movieNumber = 1; %>
                             <c:forEach items="${listPoster}" var="poster">
-                                <li>
-                                    <div class="curr-box">
-                                        <span class="num"><%= movieNumber++ %></span>
-                                        <span class="img">
-                                            <a href="detail-movie?movieID=${poster.movieID}">
-                                                <img src="./assets/images/posterImages/${poster.posterImage}" />
-                                            </a>
-                                        </span>
-                                    </div>
-                                    <dl class="list-text">
-                                        <dt>
-                                            <a href="detail-movie?movieID=">
-
-                                                <span>${poster.title.toUpperCase()}</span>
-                                            </a>
-                                        </dt>
-                                        <dd>
-                                            <span class="rate">${poster.duration} phút</span>
-                                            <span class="grade">
-                                                <em>${poster.releaseDate}</em>
+                                <c:if test="${account.getRole().getRoleID() != 1}">
+                                    <c:if test="${poster.display == 1}">
+                                        <li>
+                                            <div class="curr-box">
+                                                <span class="num"><%= movieNumber++ %></span>
+                                                <span class="img">
+                                                    <a href="detail-movie?movieID=${poster.movieID}">
+                                                        <img src="./assets/images/posterImages/${poster.posterImage}" />
+                                                    </a>
+                                                </span>
+                                            </div>
+                                            <dl class="list-text">
+                                                <dt>
+                                                    <a href="detail-movie?movieID=">
+                                                        <span>${poster.title.toUpperCase()}</span>
+                                                    </a>
+                                                </dt>
+                                                <dd>
+                                                    <span class="rate">${poster.duration} phút</span>
+                                                    <span class="grade">
+                                                        <em>${poster.releaseDate}</em>
+                                                    </span>
+                                                </dd>
+                                            </dl>
+                                        </li>
+                                    </c:if>
+                                </c:if>
+                                <c:if test="${account.getRole().getRoleID() == 1}">
+                                    <li>
+                                        <div class="curr-box">
+                                            <span class="num"><%= movieNumber++ %></span>
+                                            <span class="img">
+                                                <a href="detail-movie?movieID=${poster.movieID}">
+                                                    <img src="./assets/images/posterImages/${poster.posterImage}" />
+                                                </a>
                                             </span>
-                                        </dd>
-                                    </dl>
-                                </li>
+                                        </div>
+                                        <dl class="list-text">
+                                            <dt>
+                                                <a href="detail-movie?movieID=">
+                                                    <span>${poster.title.toUpperCase()}</span>
+                                                </a>
+                                            </dt>
+                                            <dd>
+                                                <span class="rate">${poster.duration} phút</span>
+                                                <span class="grade">
+                                                    <em>${poster.releaseDate}</em>
+                                                </span>
+                                            </dd>
+                                        </dl>
+                                    </li>
+                                </c:if>
                             </c:forEach>
                         </ul>
                     </div>
