@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -117,25 +118,19 @@ public class BookingTicketServlet extends HttpServlet {
                 }
                 //lay ra cac rap chieu phim do
                 List<Cinemas> listCinemas = d.getAllCinemas(Integer.parseInt(movieID), dateSql, Integer.parseInt(direction));
-                if (listCinemas == null) {
-                    request.setAttribute("isEmpty", true);
-                } else {
-                    request.setAttribute("isEmpty", false);
-                    request.setAttribute("listCinemas", listCinemas);
 
-                    // Create a map to store the list of ScreeningTimes for each cinema
-                    Map<Integer, List<ScreeningTimes>> cinemaScreeningTimes = new HashMap<>();
+                // Create a map to store the list of lists of ScreeningTimes for each cinema
+                Map<String, List<List<ScreeningTimes>>> cinemaScreeningTimes = new HashMap<>();
 
-                    // For each cinema, get the cinemaID and use it to get the list of ScreeningTimes
-                    for (Cinemas cinema : listCinemas) {
-                        int cinemaID = cinema.getCinemaID();
-                        List<ScreeningTimes> listScreeningTimes = d.getAllFlimList(Integer.parseInt(movieID), cinemaID, dateSql, startTime);
-                        if (listScreeningTimes == null) {
-                            request.setAttribute("isEmpty", true);
-                        } else {
-                            request.setAttribute("isEmpty", false);
-                        }
-
+                // For each cinema, get the cinemaID and use it to get the list of ScreeningTimes
+                for (Cinemas cinema : listCinemas) {
+                    String cinemaName = cinema.getName();
+                    List<ScreeningTimes> listScreeningTimes = d.getAllFlimList(Integer.parseInt(movieID), cinema.getCinemaID(), dateSql, startTime);
+                    if (listCinemas != null && listScreeningTimes.size() == 0) {
+                        request.setAttribute("isEmpty", true);
+                    } else {
+                        request.setAttribute("isEmpty", false);
+                        request.setAttribute("listCinemas", listCinemas);
                         // Sort the listScreeningTimes in ascending order based on the start time
                         Collections.sort(listScreeningTimes, new Comparator<ScreeningTimes>() {
                             @Override
@@ -144,12 +139,19 @@ public class BookingTicketServlet extends HttpServlet {
                             }
                         });
 
-                        cinemaScreeningTimes.put(cinemaID, listScreeningTimes);
+                        // If the cinema name is already in the map, add the listScreeningTimes to the existing list
+                        if (cinemaScreeningTimes.containsKey(cinemaName)) {
+                            cinemaScreeningTimes.get(cinemaName).add(listScreeningTimes);
+                        } else {
+                            // If the cinema name is not in the map, create a new list and add the listScreeningTimes to it
+                            List<List<ScreeningTimes>> lists = new ArrayList<>();
+                            lists.add(listScreeningTimes);
+                            cinemaScreeningTimes.put(cinemaName, lists);
+                        }
                     }
-
-                    // Add the map to the request attributes
-                    request.setAttribute("cinemaScreeningTimes", cinemaScreeningTimes);
                 }
+                // Add the map to the request attributes
+                request.setAttribute("cinemaScreeningTimes", cinemaScreeningTimes);
 
             } catch (NumberFormatException e) {
                 request.setAttribute("isEmpty", true);

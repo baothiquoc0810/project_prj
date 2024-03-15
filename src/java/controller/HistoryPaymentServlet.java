@@ -87,7 +87,7 @@ public class HistoryPaymentServlet extends HttpServlet {
             List<Tickets> listTickets = dao.paginationTickets(user.getUserID(), index);
             int count = dao.countPaginationTickets(user.getUserID());
             int endPage = count/5;
-            if(endPage % 5 == 0){
+            if(endPage % 5 != 0){
                 endPage++;
             }
             
