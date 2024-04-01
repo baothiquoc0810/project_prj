@@ -34,7 +34,7 @@
                             <div class="ticketbox">
                                 <div class="screen"></div>
                                 <div class="row">
-                                    <form style="width:97%" id="seatForm" action="payment" onsubmit="return validateForm()">
+                                    <form style="width:97%" id="seatForm" action="payment" method="post" onsubmit="return validateForm()">
                                         <div class="seats-container">
 
                                             <c:forEach var="row" items="${'ABCDEFGHIJ'.split('')}">

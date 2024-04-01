@@ -4,6 +4,7 @@
  */
 package controller;
 
+import com.paypal.base.rest.PayPalRESTException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import modal.OrderDetail;
+import modal.OrderTest;
 import modal.ScreeningTimes;
 import modal.Seats;
 import modal.Users;
@@ -76,6 +79,42 @@ public class PaymentServlet extends HttpServlet {
         if (user == null || selectedSeats == null || totalPrice == null || screeningID == null) {
             response.sendRedirect("home");
         } else {
+            String[] selectedSeatsArray = selectedSeats.split(", ");
+            int count = selectedSeatsArray.length;
+
+            ScreeningTimes screeningTime = dao.getScreeningTimesByID(Integer.parseInt(screeningID));
+            request.setAttribute("count", count);
+            request.setAttribute("selectedSeats", selectedSeats);
+            request.setAttribute("screeningTime", screeningTime);
+            request.setAttribute("totalPrice", totalPrice);
+            request.getRequestDispatcher("/WEB-INF/views/paymentDetail.jsp").forward(request, response);
+        }
+
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Users user = (Users) request.getSession().getAttribute("account");
+        DAO dao = new DAO();
+        java.time.LocalDate localDate = java.time.LocalDate.now();
+        java.sql.Date sqlDate = java.sql.Date.valueOf(localDate);
+        String selectedSeats = request.getParameter("selectedSeats");
+        String totalPrice = request.getParameter("totalPrice");
+        String screeningID = request.getParameter("screeningID");
+        ScreeningTimes screeningTime = dao.getScreeningTimesByID(Integer.parseInt(screeningID));
+
+        if (user == null || selectedSeats == null || totalPrice == null || screeningID == null) {
+            response.sendRedirect("home");
+        } else {
 
             //split the selectedSeats string into an array of strings
             String[] selectedSeatsArray = selectedSeats.split(", ");
@@ -93,7 +132,6 @@ public class PaymentServlet extends HttpServlet {
             HttpSession session = request.getSession();
             Users account = (Users) session.getAttribute("account");
             int userID = account.getUserID();
-            ScreeningTimes screeningTime = dao.getScreeningTimesByID(Integer.parseInt(screeningID));
 
             //insert order
             dao.insertOrder(userID, screeningTime.getMovieID().getMovieID(), count, totalPrice);
@@ -106,30 +144,25 @@ public class PaymentServlet extends HttpServlet {
                 dao.insertTicket(userID, screeningTime.getMovieID().getMovieID(), screeningTime.getTheaterID().getCinemaID().getCinemaID(), "75000", sqlDate, seat.getSeatID(), orderID);
             }
 
-            //     for(Seats seatTest : seats){
-            //     response.getWriter().print(orderID+" "+userID+" "+screeningTime.getMovieID().getMovieID()+" "+screeningTime.getTheaterID().getCinemaID().getCinemaID()+" "+sqlDate+" "+seatTest.getSeatID());
-            // }
-            //get screeningTime by id
-            request.setAttribute("count", count);
-            request.setAttribute("selectedSeats", selectedSeats);
-            request.setAttribute("screeningTime", screeningTime);
-            request.setAttribute("totalPrice", totalPrice);
-            request.getRequestDispatcher("/WEB-INF/views/paymentDetail.jsp").forward(request, response);
-        }
-    }
+            String stringUserID = Integer.toString(user.getUserID());
+            String movieID = Integer.toString(screeningTime.getMovieID().getMovieID());
+            OrderTest orders = new OrderTest("ticket", stringUserID, movieID, Integer.toString(count), totalPrice);
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+            //create session attribute for order
+            OrderDetail orderDetail = new OrderDetail(screeningTime, selectedSeats, Integer.toString(count), totalPrice);
+            HttpSession sessionOrder = request.getSession();
+            sessionOrder.setAttribute("orderDetail", orderDetail);
+
+            try {
+                PaymentServices paymentService = new PaymentServices();
+                String approvalLink = paymentService.authorizePayment(orders);
+                response.sendRedirect(approvalLink);
+            } catch (PayPalRESTException ex) {
+                ex.printStackTrace();
+                request.setAttribute("errorMessage", "Invalid Payment Details");
+                request.getRequestDispatcher("/WEB-INF/views/paymentDetail.jsp").forward(request, response);
+            }
+        }
     }
 
     /**

@@ -40,23 +40,23 @@
                         <div class="carousel-inner" style="height:551px">
                             <div class="carousel-item active">
                                 <img
-                                    class="d-block w-100"
+                                    class="d-block"
                                     src="https://images.bauerhosting.com/empire/2023/08/empoct23-dune-part-two-crop-cover.jpg?ar=16%3A9&fit=crop&crop=top&auto=format&w=undefined&q=80"
                                     alt="First slide"
                                     />
                             </div>
                             <div class="carousel-item">
                                 <img
-                                    class="d-block w-100"
-                                    src="https://medianews.thieunien.vn/uploads/2024/01/07/405244875-945815760242027-4346851287959785821-n-1704603519.jpg"
+                                    class="d-block"
+                                    src="https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/1/image/1800x/71252117777b696995f01934522c402d/6/4/640x396-q-m.jpg"
                                     alt="Second slide"
                                     />
                             </div>
 
                             <div class="carousel-item">
                                 <img
-                                    class="d-block w-100"
-                                    src="https://cveidm2974.expandcart.com/ecdata/stores/CVEIDM2974/image/data/products/1708917293_thumbspyxfamMovieVN.jpg"
+                                    class="d-block"
+                                    src="https://daknong.1cdn.vn/thumbs/1200x630/2024/03/08/cdn.galaxycine.vn-media-2024-2-23-_kungfu-panda-4-750_1708659196070.jpg"
                                     alt="Third slide"
                                     />
                             </div>

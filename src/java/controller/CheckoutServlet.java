@@ -7,23 +7,19 @@ package controller;
 import dal.DAO;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import modal.Tickets;
 import modal.Users;
 
 /**
  *
  * @author bquoc
  */
-@WebServlet(name = "HistoryPaymentServlet", urlPatterns = {"/historyPayment"})
-public class HistoryPaymentServlet extends HttpServlet {
+@WebServlet(name = "CheckoutServlet", urlPatterns = {"/checkout"})
+public class CheckoutServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,10 +38,10 @@ public class HistoryPaymentServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet HistoryPaymentServlet</title>");
+            out.println("<title>Servlet CheckoutServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet HistoryPaymentServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet CheckoutServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -63,39 +59,18 @@ public class HistoryPaymentServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         Users user = (Users) request.getSession().getAttribute("account");
-        if (user == null || user.getRole() == null || user.getRole().getName() == null) {
-            response.sendRedirect("signin");
+        DAO dao = new DAO();
+        java.time.LocalDate localDate = java.time.LocalDate.now();
+        java.sql.Date sqlDate = java.sql.Date.valueOf(localDate);
+        String selectedSeats = request.getParameter("selectedSeats");
+        String totalPrice = request.getParameter("totalPrice");
+        String screeningID = request.getParameter("screeningID");
+
+        if (user == null || selectedSeats == null || totalPrice == null || screeningID == null) {
+            response.sendRedirect("home");
         } else {
-            request.setAttribute("colorMain", "white");
-            request.setAttribute("backgroundColorMain", "red");
-
-            request.setAttribute("colorSecond", "#666");
-            request.setAttribute("backgroundColorSecond", "#bfd2d9");
-
-            String indexPage = request.getParameter("index");
-            
-            if (indexPage == null) {
-                indexPage = "1";
-            }
-            int index = Integer.parseInt(indexPage);
-
-            //get list history payment
-            //get userid from session
-            DAO dao = new DAO();
-            List<Tickets> listTickets = dao.paginationTickets(user.getUserID(), index);
-            int count = dao.countPaginationTickets(user.getUserID());
-            int endPage = count/5;
-            if(count % 5 != 0){
-                endPage++;
-            }
-            
-            request.setAttribute("endPage", endPage);
-            request.setAttribute("tag", index);
-            request.setAttribute("listTickets", listTickets);
-
-            request.getRequestDispatcher("/WEB-INF/views/historyPayment.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/checkout.jsp").forward(request, response);
         }
     }
 

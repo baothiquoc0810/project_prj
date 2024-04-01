@@ -223,8 +223,7 @@ li {
     margin-bottom: 15px;
 }
 .carousel-item img {
-    /* height: 645px;
-    width: 1000px; */
+     height: 551px;
     object-fit: contain;
     border-radius: 10px; /* Thêm border radius là 10px cho ảnh trong carousel */
 }
