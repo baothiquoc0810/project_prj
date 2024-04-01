@@ -4,26 +4,27 @@
  */
 package controller;
 
-import dal.DAO;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import modal.Tickets;
-import modal.Users;
 
+
+
+import com.paypal.api.payments.PayerInfo;
+import com.paypal.api.payments.Payment;
+import com.paypal.api.payments.Transaction;
+import com.paypal.base.rest.PayPalRESTException;
+//import modal.PaymentServices;
 /**
  *
  * @author bquoc
  */
-@WebServlet(name = "HistoryPaymentServlet", urlPatterns = {"/historyPayment"})
-public class HistoryPaymentServlet extends HttpServlet {
+@WebServlet(name = "ExecutePaymentServlet", urlPatterns = {"/execute_payment"})
+public class ExecutePaymentServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,10 +43,10 @@ public class HistoryPaymentServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet HistoryPaymentServlet</title>");
+            out.println("<title>Servlet ExecutePaymentServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet HistoryPaymentServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ExecutePaymentServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -63,40 +64,7 @@ public class HistoryPaymentServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        Users user = (Users) request.getSession().getAttribute("account");
-        if (user == null || user.getRole() == null || user.getRole().getName() == null) {
-            response.sendRedirect("signin");
-        } else {
-            request.setAttribute("colorMain", "white");
-            request.setAttribute("backgroundColorMain", "red");
-
-            request.setAttribute("colorSecond", "#666");
-            request.setAttribute("backgroundColorSecond", "#bfd2d9");
-
-            String indexPage = request.getParameter("index");
-            
-            if (indexPage == null) {
-                indexPage = "1";
-            }
-            int index = Integer.parseInt(indexPage);
-
-            //get list history payment
-            //get userid from session
-            DAO dao = new DAO();
-            List<Tickets> listTickets = dao.paginationTickets(user.getUserID(), index);
-            int count = dao.countPaginationTickets(user.getUserID());
-            int endPage = count/5;
-            if(count % 5 != 0){
-                endPage++;
-            }
-            
-            request.setAttribute("endPage", endPage);
-            request.setAttribute("tag", index);
-            request.setAttribute("listTickets", listTickets);
-
-            request.getRequestDispatcher("/WEB-INF/views/historyPayment.jsp").forward(request, response);
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -110,7 +78,24 @@ public class HistoryPaymentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String paymentId = request.getParameter("paymentId");
+        String payerId = request.getParameter("PayerID");
+
+        try {
+            PaymentServices paymentService = new PaymentServices();
+            Payment payment = paymentService.executePayment(paymentId, payerId);
+            PayerInfo payerInfo = payment.getPayer().getPayerInfo();
+            Transaction transaction = payment.getTransactions().get(0);
+
+            request.setAttribute("payer", payerInfo);
+            request.setAttribute("transaction", transaction);
+            request.getRequestDispatcher("/WEB-INF/views/receipt.jsp").forward(request, response);
+
+        } catch (PayPalRESTException ex) {
+            ex.printStackTrace();
+            request.setAttribute("errorMessage", "Could not execute payment");
+            request.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(request, response);
+        }
     }
 
     /**

@@ -9,7 +9,7 @@ import java.sql.Date;
  * @author bquoc
  */
 public class Orders {
-   private int oriderID;
+   private int orderID;
    private Users userID;
    private Movies movieID;
    private int quantity;
@@ -18,20 +18,20 @@ public class Orders {
     public Orders() {
     }
 
-    public Orders(int oriderID, Users userID, Movies movieID, int quantity, String allPrice) {
-        this.oriderID = oriderID;
+    public Orders(int orderID, Users userID, Movies movieID, int quantity, String allPrice) {
+        this.orderID = orderID;
         this.userID = userID;
         this.movieID = movieID;
         this.quantity = quantity;
         this.allPrice = allPrice;
     }
 
-    public int getOriderID() {
-        return oriderID;
+    public int getOrderID() {
+        return orderID;
     }
 
-    public void setOriderID(int oriderID) {
-        this.oriderID = oriderID;
+    public void setOrderID(int oriderID) {
+        this.orderID = oriderID;
     }
 
     public Users getUserID() {

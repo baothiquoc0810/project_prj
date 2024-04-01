@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import modal.Movies;
+import modal.OrderDetail;
 
 @WebServlet("/home")
 public class HomeServlet extends HttpServlet {
@@ -23,9 +24,10 @@ public class HomeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         DAO d = new DAO();
         List<Movies> list = d.getMovies();
-//        for (Movies movies : list) {
-//            response.getWriter().print(movies.getPosterImage());
-//        }
+        OrderDetail order = (OrderDetail) request.getSession().getAttribute("order");
+        if(order != null){
+            request.getSession().removeAttribute("order");
+        }
         request.setAttribute("listPoster", list);
         request.getRequestDispatcher("/WEB-INF/views/home.jsp").forward(request, response);
     }

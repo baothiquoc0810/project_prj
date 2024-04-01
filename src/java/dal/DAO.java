@@ -189,7 +189,7 @@ public class DAO extends DBContext {
     //void get all movies
     public List<Movies> getMovies() {
         List<Movies> list = new ArrayList<>();
-        String sql = "SELECT * FROM Movies m WHERE m.releaseDate < CAST(GETDATE() AS DATE)";
+        String sql = "SELECT * FROM Movies m WHERE m.releaseDate BETWEEN DATEADD(DAY, -30, CAST(GETDATE() AS DATE)) AND CAST(GETDATE() AS DATE) order by releaseDate";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -224,7 +224,7 @@ public class DAO extends DBContext {
 
     //void get movie by movieID
     public Movies getMovieByID(int movieID) {
-        String sql = "select * from Movies where movieID = ?";
+        String sql = "select * from Movies as m where m.movieID = ? and m.releaseDate BETWEEN DATEADD(DAY, -30, CAST(GETDATE() AS DATE)) AND CAST(GETDATE() AS DATE) order by releaseDate";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, movieID);
@@ -580,9 +580,9 @@ public class DAO extends DBContext {
 
     //insert new movie
     public void insertNewMovie(String title, String description, Date releaseDate, String posterImage, int duration) {
-        String sql = "insert into Movies (title, description, releaseDate, posterImage, duration, 1)\r\n"
+        String sql = "insert into Movies (title, description, releaseDate, posterImage, duration, display)\r\n"
                 + //
-                "values(?, ?, ?, ?, ?, ?)";
+                "values(?, ?, ?, ?, ?, 1)";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, title);
@@ -818,6 +818,7 @@ public class DAO extends DBContext {
         }
         return list;
     }
+
 
     public static void main(String[] args) {
         DAO dao = new DAO();

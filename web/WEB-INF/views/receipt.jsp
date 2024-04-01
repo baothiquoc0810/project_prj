@@ -1,13 +1,12 @@
 <%-- 
-    Document   : paymentDetail
-    Created on : Mar 9, 2024, 5:01:47 PM
+    Document   : receipt
+    Created on : Mar 19, 2024, 10:57:39 AM
     Author     : bquoc
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %><!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -76,9 +75,9 @@
         }
 
     </style>
+    <body>
     <%@include file="header.jsp" %>
 
-    <body>
         <div class="container-fluid">
 
             <div class="container">
@@ -86,7 +85,6 @@
                 <div class="row">
                     <div class="card">
                         <div class="card-body">
-                            <form action="payment">
                                 <table class="table table-borderless">
                                     <tbody>
                                         <tr>
@@ -115,22 +113,24 @@
                                     </tbody>
                                     <tfoot>
                                         <tr class="fw-bold">
-                                            <td colspan="2" style="font-size: 20px; font-weight: bold">TOTAL: <span style="color: red">${orderDetail.getTotalPrice} đồng</span></td>
+                                            <td colspan="2" style="font-size: 20px; font-weight: bold">TOTAL: <span style="color: red">${orderDetail.getTotalPrice()} đồng</span></td>
                                             <td class="text-end" style="font-size: 20px; font-weight: bold">
-                                                <button class="button-agree" href="http://localhost:9999/project/home" role="button">XÁC NHẬN</button>
+                                                <button class="button-agree">
+                                                    <a style="color: black; font-weight: bold;" href="http://localhost:9999/project/home">
+                                                        XÁC NHẬN
+                                                </a>
+                                            </button>
                                             </td>
                                         </tr>
                                     <h3>${errorMessage}</h3>
                                     </tfoot>
                                 </table>
-                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <%@include file="footer.jsp" %>
 
     </body>
-    <%@include file="footer.jsp" %>
-
 </html>
